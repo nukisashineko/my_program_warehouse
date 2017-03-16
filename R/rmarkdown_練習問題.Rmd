@@ -1,0 +1,92 @@
+---
+title: "test"
+author: "nukisashineko"
+date: "2015年07月01日"
+output: html_document
+---
+参考:[knitr ではじめるデータ分析レポート作成 ~基礎編~ - Qiita](http://qiita.com/yu-iskw/items/a3000cb7d5b17ad71731)
+
+
+練習問題集
+練習問題：h1, h2, h3 要素を markdown で書いてみよう   
+練習問題：R markdown 中で R の処理を書いて実行してみよう  
+練習問題：R markdown 中の文章中インラインで R を実行してみよう   
+練習問題：プロット図の幅と高さを変えてみよう   
+練習問題：プロット図の位置を真ん中に変えてみよう   
+練習問題：プロット図を JPEG に変更しよう   
+練習問題：行列やデータフレームを kable 関数で整形された状態で出力しよう   
+練習問題：チャンク内の R のコードを表示しないように指定しよう   
+練習問題：knit2html 関数でコマンドから HTML を生成してみよう   
+練習問題：チャンクオプションのグルーバル設定をやってみよう   
+ 
+-----
+回答
+
+
+練習問題：h1, h2, h3 要素を markdown で書いてみよう 
+#タイトル
+## 部
+##章
+
+練習問題：R markdown 中で R の処理を書いて実行してみよう  
+```{r}
+1+1
+```
+
+練習問題：R markdown 中の文章中インラインで R を実行してみよう 
+```{r}
+tmp <- 10**3
+```
+tmpの結果は`r tmp` です  
+
+練習問題：プロット図の幅と高さを変えてみよう 
+```{r,fig.width=4,fig.height=4}
+plot(1:10)
+```
+
+練習問題：プロット図の位置を真ん中に変えてみよう   
+```{r,fig.width=4,fig.height=4,fig.align='center'}
+plot(1:10)
+
+```
+
+練習問題：プロット図を JPEG に変更しよう   
+```{r,fig.height=4,fig.width=4,dev='jpeg'}
+plot(1:10)
+```
+
+練習問題：行列やデータフレームを kable 関数で整形された状態で出力し  
+  
+  
+```{r results='asis',echo=FALSE,}
+knitr::kable(head(iris,6))
+```
+  
+  
+練習問題：チャンク内の R のコードを表示しないように指定しよう   
+```{r,echo=FALSE}
+1+1
+
+```
+
+練習問題：knit2html 関数でコマンドから HTML を生成してみよう   
+```{r}
+
+```
+
+練習問題：for 文を使って大量にプロット図を 20 枚生成してみよう   
+```{r,fig.height=3,fig.width=3,echo=FALSE}
+for(i in 1:20){
+  df <- data.frame(x=runif(100), y=runif(100))
+  plot(df,main=i)
+}
+
+```
+
+練習問題：チャンクオプションのグルーバル設定をやってみよう   
+
+```{r,echo=FALSE}
+library(knitr)
+opts_chunk$set(fig.width=5,fig.height=5,warning=FALSE)
+```
+

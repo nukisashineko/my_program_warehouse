@@ -1,0 +1,41 @@
+int main(int argc, char *argv[])
+{
+    int linktype;
+    int if_eth_fd=initdevice("eth0",1);
+    struct etherpacket ep;
+    struct sockaddr dest;
+    struct iphdr *ip;
+    struct tcphdr *tcp;
+    struct timeval timeout;
+    fd_set rd,wr;
+    int dlen;
+
+    for(;;)
+    {
+        bzero(&dest,sizeof(dest));
+        dlen=0;
+        FD_ZERO(&rd);
+        FD_ZERO(&wr);
+        FD_SET(if_eth_fd,&rd);
+        timeout.tv_sec=0;
+        timeout.tv_usec=0;
+        ip=(struct iphdr *)(((unsigned long)&ep.ip)-2);
+        tcp=(struct tcphdr *)(((unsigned long)&ep.tcp)-2);
+        while(timeout.tv_sec==0 && timeout.tv_usec==0)
+        {
+          timeout.tv_sec=10;
+          timeout.tv_usec=0;
+          select(20,&rd,&wr,NULL,&timeout);
+          if(FD_ISSET(if_eth_fd,&rd))
+            {
+            recvfrom(if_eth_fd,&ep,sizeof(ep),0,&dest,&dlen);
+            }
+          }
+
+        if(((ep.eth.h_proto==ntohs(ETH_P_IP)) && ( ip->protocol == 6)) && (tcp -> syn) == 1)
+        {
+          printf("%s[%d]->",inet_ntoa(ip->saddr),ntohs(tcp->source));
+          printf("%s[%d]\n",inet_ntoa(ip->daddr),ntohs(tcp->dest));
+        }
+    }
+}

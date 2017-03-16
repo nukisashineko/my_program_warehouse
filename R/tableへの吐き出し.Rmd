@@ -1,0 +1,22 @@
+---
+title: "恥寄せ"
+author: "nukisashineko"
+date: "2015年06月14日"
+output: html_document
+---
+
+ サイバー系 R MarkdownのFAQ＿Table編 1. data.frameをhtmlのtableみたいに表示させたい 
+ この場合はhwriter::hwrite()関数かxtable::xtable()関数がいいと思い ます。 
+
+```{r,results='asis'}
+print(xtable::xtable(iris), type="html") 
+```
+
+2. テーブル中の値を左寄せ、もしくは右寄せにしたい 
+```{r,results='asis'}
+xt <- xtable::xtable(iris) 
+xtable::align(xt) <- rep("l", ncol(iris) + 1) 
+print(xt, type="html")
+```
+?print
+3. テーブルの枠が表示されない これはcssを設定しなければいけません →次ページへ2012/8/4 26 

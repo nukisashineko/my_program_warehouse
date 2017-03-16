@@ -1,0 +1,37 @@
+---
+title: "R MarkdownでPDF"
+author: "@kohske"
+documentclass: ltjarticle
+output: 
+  pdf_document:
+    latex_engine: lualatex
+---
+
+マークダウン記法は対応するLaTeXスタイルになります。
+
+# リスト
+
+- あいうえお
+- かきくけこ
+
+## 番号付きリスト
+
+1. さしすせそ
+1. たちつてと
+
+$\frac{2}{4}$  
+---
+
+表を出力してみましょう。
+
+```{r}
+knitr::kable(head(iris))
+```
+
+図を出力してみましょう。
+
+```{r}
+plot(iris)
+```
+
+---

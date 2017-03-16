@@ -1,0 +1,47 @@
+#! /bin/bash
+
+cd ~/.ssh
+echo "input your ssh-shurtcut-servername"
+read server_name
+
+echo "mkdir $server_name"
+mkdir $server_name
+cd $server_name
+echo "ssh-keygen -t rsa -b 4096  -f ${server_name}_id"
+ssh-keygen -t rsa -b 4096  -f "${server_name}_id"
+
+printf "\n>>>>>>> *didn't finsh install yet.* <<<<<<<<\n"
+echo "input your server_ip_address"
+read server_ip_address
+echo "input your server_user_name"
+read server_user_name
+
+echo "ssh-copy-id -i ./${server_name}_id.pub   ${server_user_name}@${server_ip_address} "
+ssh-copy-id -i "./${server_name}_id.pub"   "${server_user_name}@${server_ip_address}" 
+if [ $? = 0 ] ;then 
+  printf "add new ssh-shurtcut ~/.ssh/config" 
+  cat >> ~/.ssh/config  << EOF 
+
+Host ${server_name} 
+  User ${server_user_name}
+  HostName  ${server_ip_address}
+  IdentityFile ~/.ssh/${server_name}/${server_name}_id
+  IdentitiesOnly yes
+
+EOF
+  printf "\n *finsh install.* \n"
+else 
+# エラー処理
+  printf "\n *failed ssh install.* \n" 
+ 
+  rm "./${server_name}_id.pub" "./${server_name}_id" 
+  cd ~/.ssh 
+  rmdir ${server_name} 
+
+  echo "rm ./${server_name}_id.pub ./${server_name}_id" 
+  echo "cd ~/.ssh " 
+  echo "rmdir ${server_name}" 
+
+fi
+
+

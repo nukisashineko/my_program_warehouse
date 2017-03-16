@@ -1,0 +1,318 @@
+---
+title: "chapter04"
+author: "nukisashineko"
+date: "2015年06月13日"
+output: html_document
+---
+
+#二元表の解析
+
+##2x2表の解析
+###データの収集法と確立モデル
+
+||$C_1$|$C_2$|合計|
+|---|---|---|---|
+|$R_1$|a|b|$r_1$|
+|$R_2$|c|d|$r_2$|
+|合計|$c_1$|$c_2$|n|
+
+- **割合の差**: $p_2-p_1$  
+- **割合の比**: $p_2/p_1$  
+- **オッズ比**: $p_2(1-p_1)/p_1(1-p_2)$  
+
+オッズ比 > 1 == $p_1 < p_2$
+オッズ比 < 1 == $p_1 > p_2$
+
+ロジスティクス解析でよく使われる
+
+
+||回収人数|内閣支持率|
+|---|---|---|---|
+|2009-5|1897|27%|
+|2009-6|2986|19%|
+
+
+```{r}
+#binom.test(支持者,非支持者)
+#信頼区間は低下していると言える
+binom.test(round(1897*0.27), 1897-round(1897*0.27))$conf.int
+binom.test(round(2986*0.19), 2986-round(2986*0.19))$conf.int
+```
+
+###独立性のカイの二乗検定
+
+```{r}
+Ctable <- matrix(c(512,1385,567,2419),nr=2)
+chisq.test(Ctable)
+#連続性の補正がいらないなら
+chisq.test(Ctable,correct=FALSE)
+
+#男女と利き腕の割合に違いがあると言えるか？
+#ANSWER = 言えない
+library(MASS)
+(Ctable <- xtabs(~Sex+W.Hnd,data=survey))
+chisq.test(Ctable)
+```
+
+```{r}
+#データ数の少ないものは、カイの二乗検定では「うまくない」
+Ctable <- matrix(c(2,10,3,15),nr=2)
+chisq.test(Ctable)
+```
+
+###フィッシャーの直接確立法 == 
+
+下の表のような結果になるような確率を計算すると  
+$({}_4{C}_3{}_4{C}_1)/({}_8{C}_4)=8/35=0.229$  
+補足：難しく言うとこのような計算を　**超幾何モデル**という
+```{r}
+table <- matrix(c(3,1,1,3),nr=2,
+                dimnames=list("実際の作り方"=c("ミルクが先","紅茶が先"),
+                              "女性の予想"=c("ミルクが先","紅茶が先")))
+table
+table <- matrix(c(3,1,1,3),nr=2)
+#上と比べて数値が２倍になるのは
+#ミルクが先のカップを多く選べる場合だけでなく、
+#逆に紅茶を多く選ぶ場合も含めて考えているためである。
+fisher.test(table)
+fisher.test(table, alternative ="greater")
+```
+
+###関連性の指標
+- φ係数
+- ピアソン一致係数
+- クラメルのＶ統計量
+とか
+```{r}
+library(MASS)
+Ctable <- xtabs(~Sex+W.Hnd, data =survey)
+library(vcd)
+assocstats(Ctable)
+#オッズ比
+oddsratio(Ctable, log =FALSE)
+#補足、通常は自然対数を撮ったものが表示される
+oddsratio(Ctable)
+```
+
+##２XＪ表の解析
+###独立性のカイの二乗検定
+
+```{r}
+library(vcd)
+#帰無仮説の棄却
+#分布の違いー＞具体的な違いを把握 == 期待度数と観測度数の比較
+(Ctable <- xtabs(~Treatment+Improved,data=Arthritis))
+(result <- chisq.test(Ctable))
+#期待値の出力
+result$expect
+#残差の出力
+result$residual
+```
+
+**標準化残差** == **調整済み残差**
+```{r}
+Ctable <- xtabs(~Treatment+Improved,data=Arthritis)
+result <- chisq.test(Ctable)
+v <- result$expect*(1-rowSums(Ctable)/sum(Ctable)) %o% (1-colSums(Ctable)/sum(Ctable))
+(stdresidual <- (Ctable - result$expect)/ sqrt(v))
+```
+
+###カテゴリーの間に順序関係がある場合の分析
+```{r}
+manteltrend.test <- function(x, score = c(1:dim(x)[2])){
+  ctotal <- colSums(x)#列和の計算
+  rtotal <- rowSums(x)#行和の計算
+  n<-sum(x)#データの総数の計算
+  expected <- (rtotal %o% ctotal) / n #期待度数
+  tscore <- (x-expected) %*% score
+  v<- n*(score^2 %*% ctotal) - (score %*% ctotal)^2
+  statistics <- n^2 *(n-1) * tscore[2]^2 /rtotal[1] / rtotal[2] /v #統計量の計算
+  p.value <- pchisq(statistics , 1, lower.tail =FALSE) #p値の計算
+  result <- list(statistics=statistics, p_value=p.value)
+  return (result);
+}
+library(vcd)
+Ctable <- xtabs(~Treatment+Improved,data=Arthritis)
+manteltrend.test(Ctable,score = c(0,1,2))
+```
+
+###ウイルコクスン順位和検定
+一人ひとりの値が与えられていることを前提としている
+```{r}
+library(vcd)
+Ctable <- xtabs(~Treatment+Improved,data=Arthritis)
+x <-rep(col(Ctable)[1,],Ctable[1,])
+y <-rep(col(Ctable)[2,],Ctable[2,])
+wilcox.test(x,y)
+#連続値修正を拒否
+wilcox.test(x,y, correct=FALSE)
+```
+
+関数化しておく。
+```{r ,echo=FALSE}
+CategoricalWiltest <- function(x){
+  group1 <- rep(col(Ctable)[1,],Ctable[1,])
+  group2 <- rep(col(Ctable)[2,],Ctable[2,])
+  result <- wilcox.test(group1,group2,correct=FALSE)
+  return (result);
+}
+library(vcd)
+Ctable <- xtabs(~Treatment+Improved,data=Arthritis)
+CategoricalWiltest(Ctable)
+
+#ウィルコクスン平均順位のスコア用の計算関数を用意
+
+Wilcoxon.score <- function(x) {
+  ctotal <- colSums(x)
+  cumctotal <- cumsum(ctotal)
+  shiftcum <- c(0,cumctotal[1:length(cumctotal-1)])
+  score <- (cumctotal + shiftcum + 1)/2
+  return (score)
+}
+```
+
+###コクラン・アーミテージ検定
+```{r}
+gdresult <- c(2,3,9,15,18)
+nsample <- rep(20,5)
+prop.trend.test(gdresult,nsample,score=c(1,2,3,4,5))
+```
+
+n大きくなれば、自由度１のカイの二乗検定と近似してくる  
+```{r}
+Ctable <- matrix(c(2,3,9,15,18,18,17,11,5,2), byrow =TRUE, nc=5,
+                 dimnames=list(c("効果あり","効果なし"),"容量(mg)"=c(1:5)))
+Ctable
+manteltrend.test(Ctable,score= c(1,2,3,4,5))
+```
+
+
+##ＩxＪ表の解析
+###独立性の検定
+
+```{r}
+#この結果から、独立性のカイの二乗検定において、ｐ値は非常に小さいので婚姻状況とアルコー消費量の間には関連があることが示せる
+Ctable <- xtabs(Freq~Status+Alcohol, data=DanishWelfare)
+chisq.test(Ctable)
+```
+
+##一般化マンテル検定
+この統計量は２つのカテゴリカル変数が独立の場合には自由度Ｉ－１のカイ二乗分布で近似できる。
+この検定を**一般化マンテル検定**と呼ぶ
+```{r}
+extendedM.test <-function(x,score=c(1:dim(x)[2])){
+  ctotal <- colSums(x)#列和の計算
+  rtotal <- rowSums(x)#行和の計算
+  n<-sum(x)#データの総数の計算
+  expected <- (rtotal %o% ctotal) / n #期待度数
+  tscore <- (x-expected) %*% score
+  mean.score <- (score %*% ctotal)/n
+  v<- (score- mean.score)^2 %*% ctotal
+  statistics <- (n-1)*sum(tscore^2/rtotal)/v #統計量の計算
+  p.value <- pchisq(statistics ,dim(x)[1]-1, lower.tail =FALSE) #p値の計算
+  result <- list(statistics=statistics, p_value=p.value)
+  return (result);
+}
+library(vcd)
+Ctable <- xtabs(Freq~Status+Alcohol, data=DanishWelfare)
+extendedM.test(Ctable)
+```
+
+###クラスカル・ワリス検定
+列の変数が順序カテゴリカル変数であると仮定している。
+
+```{r}
+CategoricalKruskaltest <- function(x){
+  colv <- rep(col(x),x)
+  rowv <- rep(row(x),x)
+  result <- kruskal.test(colv, rowv)
+  return (result);
+}
+library(vcd)
+Ctable <- xtabs(Freq~Status+Alcohol, data=DanishWelfare)
+CategoricalKruskaltest(Ctable)
+```
+
+###線形連関の検定
+```{r}
+library(coin)
+(Ctable<-apply(jobsatisfaction, c(1,2),sum))
+#注意:lbl_testはtable型のみ適応可能
+lbl_test(as.table(Ctable))
+lbl_test(as.table(Ctable),scores = list(Job.Satisfaction = c(1,2,3,4), Income=c(2.5,10,20,30)) )
+```
+
+スコアを変えると検定結果は蛇管異なるが大きな違いではない  
+lbl_testは一般ＩxＪ表に適用可能  
+I=2の場合  
+```{r}
+(Ctable <- xtabs(~Treatment+Improved,data=Arthritis))
+lbl_test(Ctable) # == manteltrend.test
+```
+
+
+##対応のあるカテゴリカル変数の関係
+###マクネマー検定
+$(|x-y|-1)^2/(x+y)$  
+
+データ=遊び食い
+```{r}
+(Kidsdish <- matrix(c(93,147,100,315), nr =2))
+mcnemar.test(Kidsdish)
+```
+マクネマー検定 ≒ binom.test(x,y,0.5)
+```{r}
+binom.test(147,247,0.5)
+```
+
+```{r}
+#教員志望の強さの調査結果 c(1,2,3)==c("強い","弱い","未定")
+THdata <- matrix(c(13,4,0,17,35,7,2,2,2),nr=3,byrow=TRUE)
+dimnames(THdata) <- list(grade3 = c(1,2,3), grade4 = c(1,2,3))
+THdata
+mcnemar.test(THdata)
+#　対称であるという仮説は棄却される
+#４年時になって教員志望が強くなった学生が多く見られることがわかる
+```
+
+##練習問題
+A.1
+```{r}
+library(vcd)
+data(JobSatisfaction)
+Ctable <- xtabs(Freq ~management+ own,data=JobSatisfaction)
+chisq.test(Ctable)
+#同一であるという仮説は棄却
+fisher.test(Ctable)
+#同一であるという仮説は棄却
+#odds比の信頼区間 > 1  p1 > p2
+```
+
+A.2
+```{r}
+Ctable <- apply(Titanic[,,"Child",], c(2,3), sum)
+chisq.test(Ctable)
+#生存率が同一であるという仮説は棄却
+```
+
+A.3
+```{r}
+Ctable <- apply(Titanic, c(1,4), sum)[-4,]
+chisq.test(Ctable)
+#グレードによって,生存率にいは違いがある
+chisq.test(Ctable)$residual
+#残差分析より
+#ファーストクラスのほうが生き残りやすく、サードクラスは生き残りにくかった。
+```
+
+A.4
+```{r}
+library(vcd)
+data(Hospital)
+Hospital
+library(coin)
+lbl_test(Hospital)
+#線形連関はある。
+```
+
+

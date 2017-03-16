@@ -1,0 +1,195 @@
+---
+title: "Untitled"
+author: "nukisashineko"
+date: "2015年07月30日"
+output: html_document
+---
+#[第2回　レポートづくりを加速せよ　～R Markdown環境の導入＆チュートリアル～：R Markdownで楽々レポートづくり｜gihyo.jp … 技術評論社](http://gihyo.jp/admin/serial/01/r-markdown/0002)
+
+#rmarkdownでレポートづくり。
+
+##インラインコード
+
+> テキスト……`r "Rのコード"`テキスト……
+
+とかける。  
+> irisの１列目と煮れえ詰めの相関は`r cor(iris[[1]],iris[[2]])`です。  
+
+ここ部分のレポートでは
+
+yamlフロントマターによるメタ情報の設定
+
+Rmarkdownの先頭にはYAMLフロントマターと呼ばれるブロックを記述します。（必須ではないが記述したほうがいい。）
+
+レポートのｓ区制ｓの変換に関する設定のを行います。
+基本的な書式は次のとおりです。
+インデントされた行は子要素として処理されますがyamlではインデントにタブが使えません「必ず半角スペースによりインデントする必要があります。」
+
+```{r,eval=FALSE}
+---
+ title: "R Markdown で楽々レポ〜づくり<br/>大予感レポつくｒ自在~R Markdownにまつわるエクセトラ~"
+ author: '@kohske'
+ date: "`r format(Sys.time(),'%Y/%m/%d')`"
+ output: 
+  html_docment:
+       self_contained: true
+       toc: true
+---
+
+```
+
+この中にはｒコードの埋め込みもできる。
+
+レポートの作成の設定はoutput:の要素として出力フォーマットを指定し、さらにその子要素として出力フォーマットとして指定できるフォーマットにはhtml_document,pdf_document,word_document,beamer_presentation,ioslides_presentation,slidy_presentationなどがあります。
+指定できるオプションはrコンソール上でlibrary(rmarkdown)都市たとに?html_documentなどとしてヘルプファイルを開けば参照できます。
+
+上記の例ではフォーマットをhtml撮っして、self_containedを有効にして、画像等の外部ファイルではなくhtml内部に埋め込むようにします。
+マタ、tocを有効にして目次を追加しています。。html以外のフォーマットのレポート作成するコツやは次回。
+日本語のhtmlレポとでハマるわなとして、目次を有効にした場合甚目寺をクリックしたも対応する要素にジャンプできなということがあります。ちょっと込み入った話をすると（）pandocにはascii_idenifiersというパｐすオプションがありｍ、これが有効にされていると識別子に非asciiだと識別子が生成されないというわけです。
+r markdownではこのパースオプションがデフォルトで有効になっているので、この問題を回避するにはフロントマターで
+```{r,eval=FALSE}
+---
+output:
+  html_docment: 
+  toc: true
+  pandoc_args: [
+    "--from","markdown+autolink_bare_uris+tex_math_single_backslash-implicit_figures"
+  ]
+---
+
+```
+
+とするらしい。
+パッケージオプションとフック
+Rmdファイルからレポートを作るとき、.Rmファイル内のRコードを時刻して結果を出力する処理事態はknitrパッケージにより行われています。{knitr}のパッケージオプションを設定することで変換処理をカスタマイズできます。ここでは役に立ちそうなパッケージオプションをいくつか紹介します。
+
+## パッケージオプションの設定方法
+パッケージオプションはセットアップチャンクで設定するのがよいでしょう。
+opts_knit$set(オプション名＝値)という書式で設定します。
+
+```{r ,include=FALSE}
+#セットアップチャンク・
+library(knitr)
+opts_knit$set(progress = FALSE) # 変換処理の際のプログレスバーを非表示に
+```
+
+## aliases 
+aliasesオプションを設定するとチャンクオプションのオプション名を簡単に記述できるようにあります。例えば
+```{r  include=FALSE}
+library(knitr)
+opts_knit$set(aliases = c(h="fig.height",w="fig.width"))
+```
+テキスト
+```{r iris-plot,h=12,w=12}
+plot(iris)
+```
+
+とすれば、iris-plotチャンクではfig.height=12,figwidth=12と指定されたことになります。地味機能ですが、記述ミスを減らすのに役立ちます。
+
+## チャンクオプションの評価とeval.after
+
+実はＲコードチャンク　，ちゃんくないのコードだけでなく、チャンクオプションも同様に評価されます。
+通常はちゃんくないのコードが評価される絵にチャンクオプションが評価ｓれますが、パッケージオプションeval.afterでしたいされたチャンクオプションは、ちゃんんくないのコードが評価ｓれたあとに評価ｓれるようになります。
+意味がよくわからないと思うので具体例を買く。
+```{r,include=FALSE}
+library(knitr)
+opts_knit$set(eval.after=c("fig.cap"))
+
+```
+てきすと・・・
+```{r cor-plot,fig.cap= paste0('図１: R = ', corr)}
+x = rnorm(100)
+y = rnorm(100)
+
+corr = cor(x,y)#先に計算される。
+plot(x,y)
+```
+
+global.parによるグラフィックスパラメータのグローバル化
+
+解析処理のレポートには大量のグラフが含まれ知恵ることも多いでしょう。Ｒではマージンや背景色と言ったグラフのパラメータはpar()関数で設定します。R Markdownの場合、デフォルトではコードちゃんくごとにグラフィックスパラメータが初期刺されてしまいます。これでは全てのコードチャンクでpar()による設定を記述する費用津用があり、効率的ではありません。
+
+毎回チャンクでpar()の初期化しなくてすむ！！
+
+```{r setup, include=FALSE}
+library(knitr)
+opts_knit$set(global.par=TRUE)
+
+```
+テキスト
+```{r}
+par(bg="pink")
+plot(1:10)
+```
+
+テキスト
+```{r}
+plot(10:1)
+```
+
+
+
+##フック
+R markdoown（というか裏で走る{knitr}パッケージ）にはフックという強力な機能があります。フックを設定するとチャンクの動作や出力を思い通りにカスタマイズすることができます。チャンクフックをよういるとチャンクコードの評価の前後に任意の処理を実行できます。アウトプットフックをよういると、チャンクコードの処理結果に対して任意の変換処理を実行できます。
+ここでは、各ちゃんコードの行数を自動的に出力するようなちゃんフックを紹介しまうｓ．レポートにコードをのせるの冗長ですが、せめてコード行数くらい表示しておけば、あなたがどれだけ頑張って解析コードを書いたのか、レポートを読んだ人にわかってもらえるかも知れません。
+
+```{r  include=FALSE}
+# セットアップチャンク
+library(knitr)
+prow = function(before, options, envir) {
+  if (!before) {
+    paste0(c("<p>コードは", length(options$code), "行です</p>"))
+  }
+  #options$code
+}   
+knit_hooks$set(prow = prow)#存在しない設定に対して、関数を与えることで、自分でチャンクオプションを作成できる。 
+    
+```
+
+```{r, prow=TRUE, echo=FALSE}
+# ?histでのヒストグラム作成例
+r <- hist(sqrt(islands), breaks = c(4*0:5, 10*3:5, 70, 100, 140),
+          col = "blue1")
+text(r$mids, r$density, r$counts, adj = c(.5, -.5), col = "blue3")
+sapply(r[2:3], sum)
+sum(r$density * diff(r$breaks)) # == 1
+lines(r, lty = 3, border = "purple") # -> lines.histogram(*)
+```
+
+##キャッシュにまつわるエクセトラ
+###キャッシュのリフレッシュ
+キャッシュオブジェクトのディレクトリのrm
+###cache.extraのりよう
+cache.extraの指定された文字列が変更された時に再評価をするようになる。
+**rのバージョン変更で全キャッシュの再評価**
+```{r}
+library(knitr)
+opts_chunk$set(cache.extra = R.vertion.string)
+```
+**毎日**
+```{r,cache.extra = (Sys.Date())}
+```
+**外部ファイル変更時**
+```{bash}
+touch(foo.csv)
+```
+
+```{r ,cache=TRUE,cache.extra = (tools::md5sum('foo.csv')}
+#x = read.csv("foo.csv")
+```
+
+###チャンクの依存関係
+コードチャンクＡで作成したオプゼクトをコードチャンクｂで処理する場合に困る。
+ちゃん区間の依存関係は明示することができ、依存先の変更によって再評価されるようにすることができる。
+depandson
+```{r c1,cache=TRUE}
+a =1
+print(a)
+```
+```{r c2, cache=TRUE,dependson="c1"}
+b = a +2
+print(b)
+```
+めんどくさい時はautodep=TRUEで依存関係を自動推測。
+ただし、 100%の信頼ができるわけではないため、書捨てでなければ指定推奨。
+

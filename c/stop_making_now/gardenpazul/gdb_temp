@@ -1,0 +1,11 @@
+ butterfly_move_above_flower 
+
+
+break can_butterfly_move  if x==2 && y==2
+
+break if butterfly->specal.x
+
+break can_butterfly_move if  butterfly->special.x==4 && butterfly->special.y==4 && bord[3][4]!=0 && bord[2][4]==0 && bord[5][4]==0
+break can_butterfly_move  if x==4 && y==4
+
+

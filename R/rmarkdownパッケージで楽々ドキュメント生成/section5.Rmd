@@ -1,0 +1,128 @@
+---
+title: "setion5"
+author: "nukisashineko"
+date: "2015年07月30日"
+output: html_document
+---
+# [第2回　レポートづくりを加速せよ　～R Markdown環境の入＆チュートリアル～：R Markdownで楽々レポートづくり｜gihyo.jp … 技術評論社](http://gihyo.jp/admin/serial/01/r-markdown/0002)
+
+#ぐらふを極める
+
+ggplot2でも可能な出力。
+fig.capグラフのキャプションを指定するとことで、グラフのキャプションを指定することができる。
+
+```{r,eval=FALSE}
+output: 
+  html_document: 
+    fig_caption: true
+```
+
+正弦波です。
+```{r ,fig.cap="ず１：正弦波",echo=FALSE}
+curve(sin(x), -10, 10)
+```
+
+
+マタグラフの大きさｈfig.widthなどのオプションで変更が可能。
+## rglパッケージによるインタラクティブな３Ｄグラフ
+
+多次元データ可視化したい時3Dグラフを使うといい。
+Rのrglパッケージでは3Dオブジェクトをjsで動かせるようにしている。
+{rgl}のグラフを埋め込むためにパッケージで提供されるフック関数を使います。 
+```{r}
+library(knitr)
+library(rgl)
+knit_hooks$set(webgl=hook_webgl)
+```
+#irisの3d可視化
+グリグリできるよ〜〜
+```{r,webgl=TRUE}
+#参考コード： plot3d(iris[1:3], col=rainbow(3)[iris])
+plot3d(iris[1:3],col=rainbow(3)[iris$Species])
+```
+
+##javascriptライブラリを用意たインタラクティブなグラフ
+3d.jsとか、js可視化するとユーザがデータを見やすい。
+
+dygraphsライブラリを使おう
+
+#時系列の可視化
+
+
+```{r, echo=FALSE}
+library(dygraphs)
+lungDeaths <- cbind(mdeaths, fdeaths)
+
+dygraph(lungDeaths) %>%
+  dySeries("mdeaths", label = "Male") %>%
+  dySeries("fdeaths", label = "Female") %>%
+  dyOptions(stackedGraph = TRUE) %>%
+  dyRangeSelector(height = 50)
+```
+
+
+##テーブルを極める
+
+
+```{r}
+knitr::kable(head(iris))
+```
+
+javaScriptライブラリを用意たインタラクティブなテーブル
+テーブルは正確なデータを把握できるがデータを見つけることが大変。
+
+DataTablesライブラリを使うとソートや検索ができる。
+```{r}
+library(DT)
+datatable(mtcars)
+```
+
+
+##ダイアグラムを極める
+ダイアグラム（フローチャート）の作成には、{daiagram},{Rgraphiz}などがある。  
+{DiagrammeR}パッケージというjavascriptライブラリで出来たものがある。
+※日本語を扱う場合にはgrViz()関数でgraphvizベースのダイアグラムを書くのがよいでしょう。記法は基本的にgraphvizの書式に従っています。
+```{r echo=FALSE}
+library(DiagrammeR)
+grViz('
+digraph {
+  rankdir=LR
+  node [shape = box,
+        style = rounded,
+        fontname = Helvetica]
+
+  太る [shape = egg]
+  食べる -> 飲む
+  飲む -> 飲む
+  飲む -> 酔う
+  飲む -> 寝る
+  酔う -> 太る
+  寝る -> 太る
+}
+')
+```
+
+エッジとノードをdata.frameで定義してダイアグラムを作成することもできます。
+
+```{r}
+library(DiagrammeR)
+set.seed(23)
+
+library(rvest)
+h = html("https://twitter.com/teramonagi/lists/list/members")
+L = h %>% html_nodes(xpath="//*/div/div/div/a/strong") %>% html_text()
+
+n = create_nodes(nodes = L)
+e = create_edges(from = sample(L, replace = TRUE),
+               to = sample(L, replace = TRUE))
+g =
+  create_graph(nodes_df = n,
+               edges_df = e,
+               graph_attrs = "layout = twopi",
+               node_attrs = c("fontname = Helvetica"))
+
+render_graph(g)
+```
+この例では，「匿名知的集団ホクソエム」という謎のTwitterリストのユーザをrvestを使って取得して，ダイアグラムを作成しています。今回はエッジはランダムに割り当てていますが，実際の解析ジョブでは例えばタイムラインからメンションを取得して，ユーザ同士の関係を可視化するといったことなどがありそうです。この場合，「パワポでおk」とはいきませんよね。
+
+{DiagrammeR}ではこれ以外にもガントチャートやシーケンス図の作成も可能です。{DiagrammeR}は開発中で新機能が追加されている最中です。

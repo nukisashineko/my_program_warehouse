@@ -1,0 +1,174 @@
+---
+title: "test"
+author: "nukisashineko"
+date: "2015年07月03日"
+output: html_document
+---
+```{r}
+x <- seq(0,13,0.01)
+default.par <- par()
+mai <- par()$mai
+mai[4] <- mai[1]
+par(mai = mai)
+plot(x, dexp(x), type = "l", ylab = "dexp", col = 'red')
+par(new =T)
+plot(x, dnorm(x -10), type = "l", axes = FALSE, ylab = "", col = 'blue')
+axis(4)
+mtext("dnorm", side = 4, line = 3)
+par(default.par)
+```
+
+```{r}
+path <- "/home/nukisashineko/Downloads/report15-06-26"
+setwd(path)
+read.csv('capaciter1.csv')$filter=="high_pass"
+```
+
+```{r}
+defalut_line <- data.frame(subset(read.csv('linedata.csv'), filter=="high_pass"& type == "dB"))
+
+
+df<-read.csv('linedata.csv')
+min<-min(df$x_Freq)
+t<-data.frame(subset(df, x_Freq !=min & filter=="high_pass"& type == "dB" & type2=="line"))
+result<-glm(y_dB~log10(x_Freq),data=t)
+x1 <- c()
+y1 <- c()
+for(i in seq(1e3,2.4e3,1e2)){
+  y1 <- c(t1,result$coef[[1]]+i * result$coef[[2]])
+  x1 <- 10^result$coef[[2]]
+}
+
+df<-read.csv('linedata.csv')
+max<-max(df$x_Freq)
+t<-data.frame(subset(df, x_Freq !=max & filter=="high_pass"& type == "dB" & type2=="line"))
+result<-glm(y_dB~x_Freq,data=t)
+
+y2 <- c()
+x2 <- c()
+for(i in seq(1e5,2.4e5,1e4)){
+  y2 <- c(t1,result$coef[[1]]+i * result$coef[[2]])
+  x2 <- 10^result$coef[[2]]
+}
+temp<-data.frame(x=c(x1,x2),y=c(y1,y2))
+temp
+
+
+
+
+data <- data.frame(subset(read.csv('capaciter1.csv'),filter=="high_pass"))
+defalut_line <- data.frame(subset(read.csv('linedata.csv'), filter=="high_pass"& type == "dB"))
+subset(read.csv('linedata.csv'))
+subset(read.csv('linedata.csv'), filter=="high_pass"& type == "dB" & type2=="abline")
+defalut_line2 <- data.frame(subset(read.csv('linedata.csv'), filter=="high_pass"& type == "dB" & type2=="abline"))
+glm(y_dB~log10(x_Freq),data=defalut_line2)$coef
+
+if(dafalut_line2 != FALSE){ 
+  
+} 
+glm(y_dB~x_Freq,data=defalut_line2)
+
+library(ggplot2)
+plot_temp <- function(data,defalut_line,title){
+g <- ggplot(data=data,aes(x=Ch2Frequency,y=dB))
+g <- g + xlim(0.5e3 ,3e5) 
+#g<- g + geom_line(data = defalut_line, aes(x = x_Freq, y = y_dB), colour = "red")
+g<- g + geom_smooth(data = temp, aes(x = x, y = y), colour = "red")
+#g<- g + geom_abline(glm(y_dB~log10(1+x_Freq),data=defalut_line2)$coef, colour = "red", size = 1.5)
+g <- g + geom_point(size = 5)
+g<- g+ ggtitle(title)
+g<- g+ xlab("周波数")
+g<- g+ ylab("位相")
+g <- g + geom_smooth(se = TRUE) # 近似線
+xbreaks <- c(1e3,2.4e3,5e3,1e4,2.4e4,5e4,1e5,2.4e5)
+g <- g + scale_x_log10(breaks=xbreaks,labels=xbreaks)
+print(g)  
+}
+
+plot_temp(data,defalut_line,title="ハイパスフィル")
+ylab="位相"
+xlab="周波数"
+title="ハイパスフィルタ"
+
+
+loess(dB~Ch2Frequency,data=a)
+summary(loess(dB~Ch2Frequency,data=a))
+y<-a$dB
+x<-log10(a$Ch2Frequency)
+log10(x)
+nls(y~ SSlogis(x,Asym,xmid,scal),trace = TRUE)
+```
+参考:[xlim. ggplot2 0.9.3](http://docs.ggplot2.org/0.9.3/xylim.html)
+[xbreaks <- c(0.5,1,1.5,2,2.5,3)](http://joker.hatenablog.com/entry/20110803/1312366319)
+```{r}
+x <- rnorm(200, 35, 5)
+y <- rnorm(200, 0.87, 0.12)
+###########
+lmObj <- lm(y ~ x)
+xs <- range(x)
+xs
+ys <- predict(lmObj, newdata = data.frame(x = xs))
+plot(x, y, pch = 17, bty = "l")
+lines(c(24e4,2.4e5), c(0,0), col = "red", lty = 2, lwd = 2)
+mydata
+geom_line(data = mydata2, aes(x = X, y = Y), colour = "#3B4FB8", size = 1.5)
+
+```
+
+```{r}
+p <- qplot(wt, mpg, data = mtcars)
+
+# Fixed slopes and intercepts
+p + geom_abline() # Can't see it - outside the range of the data
+p + geom_abline(intercept = 20)
+
+# Calculate slope and intercept of line of best fit
+coef(lm(mpg ~ wt, data = mtcars))
+p + geom_abline(intercept = 37, slope = -5)
+p + geom_abline(intercept = 10, colour = "red", size = 2)
+
+# See ?stat_smooth for fitting smooth models to data
+p + stat_smooth(method="lm", se=FALSE)
+
+# Slopes and intercepts as data
+p <- ggplot(mtcars, aes(x = wt, y=mpg), . ~ cyl) + geom_point()
+df <- data.frame(a=rnorm(10, 25), b=rnorm(10, 0))
+p + geom_abline(aes(intercept=a, slope=b), data=df)
+
+# Slopes and intercepts from linear model
+library(plyr)
+coefs <- ddply(mtcars, .(cyl), function(df) {
+  m <- lm(mpg ~ wt, data=df)
+  data.frame(a = coef(m)[1], b = coef(m)[2])
+})
+str(coefs)
+p + geom_abline(data=coefs, aes(intercept=a, slope=b))
+
+# It's actually a bit easier to do this with stat_smooth
+p + geom_smooth(aes(group=cyl), method="lm")
+p + geom_smooth(aes(group=cyl), method="lm", fullrange=TRUE)
+
+# With coordinate transforms
+p + geom_abline(intercept = 37, slope = -5) + coord_flip()
+p + geom_abline(intercept = 37, slope = -5) + coord_polar()
+read
+```
+
+
+
+```{r}
+X<-matrix(
+  c(0.8,0.7,0.2,
+    0.3,0.5,0.5,
+    0.6,0.7,0.4),byrow=T, nr=3)
+Y<-matrix(
+  c(0.8,0.7,0.5,
+    0.5,0.5,0.5,
+    0.6,0.6,0.7),byrow=T, nr=3)
+Z<-matrix(
+  c(0.8,0.7,0.5,0.5,0.5,0.5,0.6,0.6,0.7),byrow=T, nr=3)
+A<-matrix(
+  c(0.8,0.7,0.5,0.5,0.5,0.5,0.6,0.6,0.7),byrow=T, nr=3)
+
+
+```

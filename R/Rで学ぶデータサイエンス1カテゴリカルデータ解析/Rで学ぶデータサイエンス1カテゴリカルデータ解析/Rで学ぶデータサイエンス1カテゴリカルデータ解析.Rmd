@@ -1,0 +1,46 @@
+---
+title: "Rで学ぶデータサイエンス1カテゴリカルデータ解析"
+author: "nukisashineko"
+date: "2015年06月13日"
+output: html_document
+---
+```{r setup,include=FALSE}
+#[memo](http://d.hatena.ne.jp/isseing333/20110611/1307769436)
+library(ggplot2)
+library(reshape2)
+library(knitr)
+
+knitr::opts_chunk$set(cache=TRUE,fig.width=5,fig.height=5,out.height=300,out.width=300)
+setwd("/home/nukisashineko/program/R/Rで学ぶデータサイエンス1カテゴリカルデータ解析/Rで学ぶデータサイエンス1カテゴリカルデータ解析")
+```
+
+
+```{r ,child="chapter01.Rmd"}
+
+```
+
+```{r ,child="chapter02.Rmd"}
+
+```
+
+```{r ,child="chapter03.Rmd"}
+
+```
+
+```{r ,child="chapter04.Rmd"}
+
+```
+
+```{r ,child="chapter05.Rmd"}
+
+```
+
+```{r ,child="chapter06.Rmd"}
+
+```
+
+```{r ,child="chapter07.Rmd"}
+
+```
+
+

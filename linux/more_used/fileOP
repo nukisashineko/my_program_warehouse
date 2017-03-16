@@ -1,0 +1,38 @@
+#!/bin/sh
+
+DIR=~/Documents/unknow
+DIR_TEXT_SAVE=~/Documents/save
+DIR_MONTH=`date '+%Y_%m'`
+DATE=`date '+%Y-%m-%d'`.txt
+#$REPORT="$DIR/$DATE.txt"
+#touch $REPORT
+cd $DIR
+echo "`ls $DATE`"
+if [ ! `ls $DATE`  ]
+then
+	echo "">> $DATE
+fi
+if [ $# -eq 1 ]
+then
+	$1  $DATE
+else
+	vim $DATE
+fi
+#HEAD=`head --line 1 $DATE`
+#echo "HEAD=${HEAD}"
+if [ $HEAD ]
+then
+#	echo "head is hit !!"
+	NEW_DATE=`basename $DATE .txt`_$HEAD.txt
+#	echo "NEW_DATE=${NEW_DATE}"
+	mv $DATE $NEW_DATE
+	mkdir $DIR_TEXT_SAVE/$HEAD
+	mkdir $DIR_TEXT_SAVE/$HEAD/$DIR_MONTH
+	mv $NEW_DATE $DIR_TEXT_SAVE/$HEAD/$DIR_MONTH
+	echo "file is saved in $DIR_TEXT_SAVE/$HEAD/$DIR_MONTH"
+else
+	echo "head is no hit !!"
+	echo "you don't write !!"
+	rm $DATE
+fi
+	

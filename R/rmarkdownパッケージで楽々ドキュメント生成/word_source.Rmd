@@ -1,0 +1,35 @@
+---
+title: "R MarkdownでDOCX"
+author: "@kohske"
+output:
+  word_document:
+    fig_width: 5
+    fig_height: 5
+    fig_caption: true
+---
+
+マークダウン記法は対応するワードスタイルになります。
+
+# リスト
+
+- あいうえお
+- かきくけこ
+
+## 番号付きリスト
+
+1. さしすせそ
+1. たちつてと
+
+---
+
+表を出力してみましょう。
+
+```{r}
+knitr::kable(head(iris))
+```
+
+図を出力してみましょう。
+
+```{r}
+plot(iris)
+```

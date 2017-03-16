@@ -1,0 +1,11 @@
+(defun maxelem (x)
+	(if (null (cdr x))
+		(car x)
+		(if (> (car x) (maxelem (cdr x)))
+			(car x)
+			(maxelem (cdr x))
+		) 
+	)
+)
+
+(format t "~A=~A~%" '(1 2 3 4 5) (maxelem '(1 2 3 4 5) ) )

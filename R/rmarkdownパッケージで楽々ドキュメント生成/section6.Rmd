@@ -1,0 +1,109 @@
+---
+title: "section6"
+author: "nukisashineko"
+date: "2015年07月30日"
+output: html_document
+---
+
+htmlフォーマットからの拡張
+**見た目は気にしすぎるな！！**
+※本当に気にするときは使えない。でも、実務上の仕様は問題ない。
+
+> コマけぇこたぁいいんだよ！！（＊ﾉω・＊）ﾃﾍ
+
+
+広告のコンペではないのですから、伝わるべきことが伝われたばいいのだという心構えで行きましょう。
+
+出力できる形式の一覧
+
+- HTML
+    これまで紹介してきたHTML形式のレポートです。
+- PDF
+    PDFファイルを出力します。
+- Word
+    WordのDOCX形式のファイルを出力します。
+- Markdown
+    Markdown形式のファイルを出力します。
+- ioslides
+    Google I/O 2012という形式のWebスライド（ブラウザで表示できるスライド）を出力します。
+- Slidy
+    Slidyという形式のウェブスライドを出力します。
+- Beamer
+    BeamerというLaTeXスタイルによるPDF形式のスライドを出力します。 
+
+# wordの問題
+> （´°∀°`）.oO(ワードでくれ)    
+
+いあっまでどれだけの技術者がこの言葉に打ちのめされてきたことでしょう。
+夜の布団とエンドの大半はワードとエクセルで動いうているようです。共著作業となるとなかなか厳しい。
+
+これは外部ファイル"word_source.Rmd"を参照  
+
+##文字コードの問題
+ Windowでは、.Rmdファイルの文字コードがutf8の場合、rmarkdown::renderのオプションで\`encoding='utf8'\`を指定しよう
+```{r}
+library(rmarkdown)
+#render("hoge.Rmd",encoding ="utf8")
+```
+
+## pdf形式のレポート作成
+
+###LaTex環境の導入をする必要がある。
+R Markdownから日本語の入ったPDFレポートを作成するためのLaTeX環境を導入します。
+apt-get install texlive-luatex  pandoc  texlive-fonts-recommended texlive-fonts-extra  texlive-xetex texlive-lang-cjk texlive-fonts-recommended -y 
+
+だいたいこんな感じ
+作成方法は"pdf_source.Rmd"を参照
+
+##pdf形式出力オプション
+詳細は
+?rmarkdown::pdf_document
+を読んでね。  
+
+次の例では目次を有効にして、見出しに番号をつけている。  
+```{r,eval=FALSE}
+---
+title: "R MarkdownでPDF"
+author: "@kohske"
+documentclass: ltjarticle
+output: 
+  pdf_document:
+    latex_engine: lualatex
+    toc: true
+    number_sections: true
+---
+```
+
+外部TeXファイルを準備した場合は以下のようにかける
+```{r,eval=FALSE}
+---
+title: "hoge"
+output:
+  pdf_document:
+    includes:
+      in_header: header.tex
+      before_body: doc_prefix.tex
+      after_body: doc_suffix.tex
+---
+```
+
+外部TeXファイルを準備するまでもない場合、直接プリアンプるを記述可能
+```{r,eval=FALSE}
+---
+title: "hoge"
+header-includes:
+   - \usepackage{bbm}
+output:
+    pdf_document
+---
+```
+
+
+
+##まとめ
+
+基本的には
+> ＨＴＭＬいいっすよ〜（　´ー｀）ｙ－～～
+
+と粘り強く反応。
+それでダメなら、作ってみよう。

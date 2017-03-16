@@ -1,0 +1,9 @@
+#!/bin/sh
+LANG="C"
+if [ $# -eq 1 ]
+then
+	man $1
+else
+	echo "false args ..."
+	echo "you typing one more."
+fi

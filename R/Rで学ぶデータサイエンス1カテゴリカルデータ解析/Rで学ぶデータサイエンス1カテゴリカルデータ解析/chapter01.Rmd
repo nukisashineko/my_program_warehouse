@@ -1,0 +1,69 @@
+---
+title: "chapter01"
+author: "nukisashineko"
+date: "2015年06月13日"
+output: html_document
+---
+
+#はじめに
+
+```{r setup01,include=FALSE}
+library(ggplot2)
+library(reshape2)
+library(knitr)
+
+knitr::opts_chunk$set(cache=TRUE)
+setwd("/home/nukisashineko/program/R/Rで学ぶデータサイエンス1カテゴリカルデータ解析/Rで学ぶデータサイエンス1カテゴリカルデータ解析")
+```
+
+##カテゴリカルデータ解析   
+###変数  
+1. 連続変数（身長体重＝数値）  
+1. カテゴリカル変数（性別＝分類）  
+
+    1. *順序変数*(そう思う、ややそう思う、どちらとも言えない、ややそう思わない、そう思わない＝連続的)  
+    1. *名義変数*（自動車,自転車、バス、電車、徒歩＝非連続的） 
+  
+カテゴリー    
+```{r ,include=FALSE}
+Titanic
+```
+
+カテゴリカルデータの入力  
+1. 個票データ（csv?）  
+1. 集計データ  
+
+###csvファイルの読み込み
+```{r}
+Trafic <- read.csv("TAccident.csv",header =TRUE)
+```
+
+###データの直接入力
+```{r}
+TAplace <- matrix( 
+  c(3327,22196,2947,40224),nrow=2,
+  dimnames =list(Place = c("country","urban"),
+                 Injury = c("Yes","No") ))
+TAplace
+```
+
+##複数回答
+全てのカラムを持ったデータにして回答していたら1,していなかったら0を格納するようにすると解析しやすくなる
+
+##練習問題
+A.1
+```{r}
+Trafic <- read.csv("TAccident.csv",header =TRUE)
+```
+A.2
+```{r}
+head(Trafic)
+```
+A.3
+```{r}
+temp = matrix(
+  c(21,17,17,12,6,5),nrow=2,
+  dimnames=list(c("男性","女性"),
+                c("徒歩","自転車","バイク")))
+temp
+```

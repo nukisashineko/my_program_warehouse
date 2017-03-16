@@ -1,0 +1,49 @@
+#define N
+
+enum{ west,east,north,south };
+typedef sturct ans{
+	short int x;
+	short int y;
+	short int direction;
+	short int condition;
+} ANS;
+
+ANS *ans_stack;
+
+enum{ bloom=0,bud,muimui,betterfly };
+enum{ red=0,yellow };
+
+typedef sturct flower{
+	char color;
+	char condition;
+	sturct flower *next;
+} FLOWER;
+
+FLOWER *flower_list;
+FLOWER bord[N][N];
+FLOWER muimui,butterfly;
+
+void init_bord(bool temp_bord[][])
+{
+	int i,j;
+	for(i=0;i<N;i++)
+		for(j=0;j<N;j++)
+			temp_bord[i][j]=false;
+	return;
+}
+void init_bord(void)
+{
+	int i,j;
+	for(i=0;i<N;i++)
+		for(j=0;j<N;j++)
+			bord[i][j]=NULL;
+	return;
+}
+
+void scan_map(void)
+{
+	FLOWER *temp;
+	int n,tmpx,tmpy;
+	char tmp_color[7];
+	char tmp_condition[6];
+	printf("

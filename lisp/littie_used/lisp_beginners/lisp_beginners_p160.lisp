@@ -1,0 +1,10 @@
+#!/usr/bin/clisp
+(defun subst (new lod tree )
+	(cond	((eq old tree )new)
+		((atom tree) tree)
+		(t (let ((a (subst new old (car tree)))
+			 (b (subst new old (cdr tree))))
+			(cond ((and (eq a (car tree))
+				    (eq b (cdr tree)) )
+				tree)
+				(t (cons a d))

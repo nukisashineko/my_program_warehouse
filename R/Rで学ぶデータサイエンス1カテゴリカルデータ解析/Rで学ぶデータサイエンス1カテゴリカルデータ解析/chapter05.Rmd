@@ -1,0 +1,100 @@
+---
+title: "chapter05"
+author: "nukisashineko"
+date: "2015年06月16日"
+output: html_document
+---
+
+#三元表の解析
+##見せかけの関係とシンプソンのパラドックス
+
+**シンプソンのパラドックス**  
+層別に観察＝関連がない  
+層別せずに観察＝関連がある　→この時、全ての層別に対して関連があると思い込んでしまうこと。  
+
+
+
+```{r}
+UCBAdmissions
+GAdata <- apply(UCBAdmissions, c(2,1), sum) #６学科合計
+mosaicplot(GAdata)
+chisq.test(GAdata)#「男女によって合格の確率が変わらない」が棄却
+par(mfrow=c(3,2))
+for ( i in c('A','B','C','D','E','F')){#実はAだけしか男女が比率にかかわらない
+  mosaicplot(UCBAdmissions[,,i])
+}
+par(mfrow=c(1,1))
+```
+
+###条件付きの独立性の検定
+
+**マンテル・ヘンテル検定**  
+仮定：2*2表が独立である  
+```{r}
+mantelhaen.test(UCBAdmissions)
+```
+
+マンテル・ヘンテル検定（超幾何モデルの検定）
+
+```{r}
+mantelhaen.test(UCBAdmissions, exact=TRUE)
+```
+言えること：学科ごとに考えると、性別と入試結果の間の関係はあまりない
+
+
+###共通オッズ比の検定
+
+有意な違いが見られた場合に、どの程度の関係があるのかを調べるためには　　
+マンテル・ヘンテル推定量が用いられる
+だたし、exact=TRUE（超幾何モデル）を推定した場合は**条件付き最尤推定量**となる
+
+###オッズ地の均一検定
+mantelhaen.test
+前提：角層のオッズ比が全て等しい。
+各層の結果を統合するためには、オッズ比がほぼ均一であることが必要である。
+
+オッズ比の均一性の検定をしなければならない
+```{r,eval=FALSE}
+#package ‘epiclac’ is not available
+library(epicalc)
+mhor(mhtable = UCBAdmissions)
+```
+
+**ブレスロウ・デイ統計量**
+```{r}
+library(vcd)
+(lor <- oddsratio(UCBAdmissions, log=FALSE))#オッズ比のみ出力
+confint(lor)#オッズ比の信頼区間の出力
+plot(lor)
+#UCBBtoF <- UCBAdmissions[,,-1]
+#mhor(mhtable = UCBBtoF)
+```
+Ａを取り除いたオッズ比は全ての層で同一であるという仮説を棄却できない
+
+###層別ＩxＪ表の解析
+
+```{r}
+library(coin)
+mantelhaen.test(jobsatisfaction)#検定名の変更が確認できる
+lbl_test(jobsatisfaction)
+```
+Ｏ線形連関  
+Ｘ全ての層でオッズ比は同一であるを棄却  
+
+###練習問題
+A.1
+```{r}
+library(vcd)
+class(CoalMiners)
+mantelhaen.test(CoalMiners) #全ての層でオッド比が同一であるを棄却, 共通オッズ比 16.32573 
+#mhor(mhtable = CoalMiners)
+```
+A.2
+```{r}
+library(coin)
+temp <- xtabs(Freq~Class_infrence+Study_year+Sex,data=data.frame(read.csv("chapter05_Q2.csv")))
+mantelhaen.test(temp)#全ての層でオッド比が同一であるを棄却
+lbl_test(temp) #線形連関検定で有意なpを取る
+```
+
+

@@ -1,0 +1,5 @@
+a=File.open('duo001-560-4.csv','r').read.split("\n")																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															
+
+File.open("temp.csv","w") do |f|
+a.each_with_index{|x,i| f.print(x+"\t");f.print "\n" if(i%2==1)}
+end

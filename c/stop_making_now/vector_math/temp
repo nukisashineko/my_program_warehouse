@@ -1,0 +1,50 @@
+
+void kaijou(int data[],int n){}
+void multiplication_in_vector(int data1[],int data2[],int lenth1,int lenth2,int ans[],int base){ 
+	int i,j;
+	for(i=lenth1;i>0;i--){
+		for(j=lenth2;j>0;j--){
+			ans[i+j]+=data1[i]*data2[j];
+		}
+		for(j=lenth1+lenth2;j>0;j--){
+			if(ans[j]>base){ 
+				ans[j+1]+=ans[j]/base; /* ans[i+1]=quotient=ans[j]/base 繰り上がり */
+				ans[j]%=base; /* ans[i]=remainder=ans[j]%base 桁揃え */
+			}
+		}
+	}
+	return;
+ }
+void division_in_vector(int data1[],int data2[],int lenth1,int lenth2/* ,int ans[],int r */){ 
+	int i;
+	for(i=lenth1;i>0;i--){
+		data1[i]/=n;
+		if(i>0){ data1[i-1]+=data1[i]%lenth1; }/* data[i-1]=remainder=data[i]/N 繰り下がり */
+		if(i>0){ data1[i]/=lenth1; }/* data[i]=quotient=data[i]%N 桁揃え */
+	}
+	return;
+ }
+#endif /*AAA*/
+bool subtraction_in_vector(int data1[],int data2[],int lenth1,int lenth2){ 
+	int i,j;// ,quotient,remainder;// 商、余
+	if(lenth1>lenth2 || data1[0]>data2[0]){// if(data1>data2)
+		for(i=lenth1,j=lenth2;i>0 && j>0;i--,j--){
+			data1[i]-=data2[j];
+			if(0>data1[i]){
+				data1[i-1]--;  //   /* 繰り下がり */
+				data1[i]+=base;//   /* 桁揃え */
+			}
+		}
+		return(false);// +
+	}
+	else{	// if(data2>data1)
+		for(i=lenth1,j=lenth2;i>0 && j>0;i--,j--){
+			data2[j]-=data1[i];
+			if(0>data2[j]){
+				data2[j-1]--;  //   /* 繰り下がり */
+				data2[j]+=base;//   /* 桁揃え */
+			}
+		}
+		return(ture);// -
+	}
+ }

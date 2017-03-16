@@ -1,0 +1,201 @@
+---
+title: "chapter07"
+author: "nukisashineko"
+date: "2015年07月07日"
+output: html_document
+---
+
+#ポアソン回帰分析  
+##ポアソン分布  
+十年分の交通事故件数のように、
+ポアソン分布モデルは、ある種のイベントの発生回数に対する確率モデルで、次のような仮定から導かれるモデルである。  
+
+>     1. 時間を細かく分けていくと、各時間帯で発生するイベントは一回だけである。  
+>     2. 細かく分けた時間帯でのイベントの発生確率は同じである。  
+>     3. 他の時間帯のイベントの発生状況の影響は受けない  
+
+ポアソン分布では、交通事故件数のようなイベント発生回数Ｙの分布として  
+$P(Y=k)=\frac{\lambda_{}^k}{k!} e^{-\lambda}$  を仮定する。  
+パラメータの推定については最尤推定法を用いる
+$\lambda$の95%信頼区間は、データの個数を$m$、平均発生回数を$r$とすると次のような形となる  
+$r-2\sqrt{\frac{r}{m}} \leq \lambda_{} \leq r+2\sqrt{\frac{r}{m}}$  
+※ただし、この計算式は近似式であることに注意
+```{r}
+temp<-read.csv("chapter07_poason.csv")
+t<-temp[["件数"]]
+x<-temp[["日数"]]
+m <- sum(x)
+s <- t%*%x
+r<- s/m #発生件数の平均の推定値
+r
+ci<- c(r-2*sqrt(r/m),r+2*sqrt(r/m)) #信頼区間
+ci
+```
+この結果より$\lambda$の推定値は`r round(r,3)`で、95%信頼区間は`r round(ci[1],3)`以上、`r round(ci[2],3)`以下であることがわかる  
+この推定値を使って各交通死亡事故件数ごとに、その度数の期待値を求める  
+ポアソン分布の確率分布は関数dpoisを用意て計算できる。  
+交通死亡事故件数腕分けた時の度数の期待値はこの確率に日数雨の合計（３０日）をかけることで絵求められる  
+観測度数を棒グラフで表示、それに対しての期待度数を折れ線グラフで表示する  
+
+```{r,fig.width=4,fig.height=4}
+temp<-read.csv("chapter07_poason.csv")
+x<-temp[["日数"]]
+names(x) <-temp[["件数"]]
+y <- dpois(temp[["日数"]], lambda=r )*sum(x) #期待度数の計算
+lines(barplot(x, ylim=c(1,10)),y,type="l")
+```
+
+ポアソン分布の適合度検定を行う際にはvcd の関数goodfitを用いる
+データは行列として、１列めに度数、２列めに事故発生件数を入力する
+```{r}
+#x<-matrix(c(8,6,8,3,4,1,c(0:5)), nr=6)
+temp<-read.csv("chapter07_poason.csv")
+x <- as.matrix(temp)
+library(vcd)
+(result <- goodfit(x, type="poisson",method="MinChisq"))
+summary(result)
+result$par
+plot(result)
+```
+結果は、カイの二乗統計量の値は約0.503でp血は0.283であるから、こｋのデータがポアソン分布に従うという帰無仮説は有意水準５％で棄却できない。  
+ただし、自己件数のカテゴリーのうち期待度数の小さカテゴリーが含まれているため、回の二条家分布での分布近似が良くない可能せがあることが示されている  
+ところで、ここで求めている$\lambda$の推定値は自己件数雨の平均値と異なっている。これはカイの二乗統計量を最も小さくする$\lambda$の値を推定値として選んでいるためである。method="ML"と指定すると、$\lambda$の指定が自己件数の平均値と同じになる。  
+plotすると観測度数と期待度数とのズレが視覚的によくわかる。
+日付ごとの事故件数は集計データのため、行列形式での入力であるが、ベクトル形式として入力することもできる。  
+```{r}
+x <- c(0,0,0,0,0,0,0,0,1,1,1,1,1,2,2,2,2,2,2,2,2,3,3,3,4,4,4,4,5)
+library(vcd)
+(result <- goodfit(x, type="poisson",method="MinChisq"))
+```
+
+
+##ポアソン回帰分析の考え方
+InsectSpraysは発見された虫の一人スプレーの種類の龍の変数が観測されている。  
+すぷれーの種類で分類した時の虫の数の分布を調べるための箱ひげ図は
+```{r}
+boxplot(count~spray,data=InsectSprays)
+```
+箱ひげ図を見ると、スプレーごとに虫の個体数が大きく変化していることがわかる。
+中央値が大きいスプレーほどばらつきも多きことがわかり、、これポアソン分布の平均と分散が等しいという性質とも一致した傾向である。  
+虫の個体数をポアソン分布で仮定して、回帰分析を行う。  
+$log{\lambda} = a +b_{1} sprayB+ b_{2} sprayC+ ... + b_{5} sprayF$  
+を仮定する
+```{r}
+(result<-glm(count~spray,data=InsectSprays,family="poisson"))
+```
+
+よってスプレーＡでの個体数の期待値は$e^{`r result$coef[["(Intercept)"]]`}=`r exp(result$coef[["(Intercept)"]])`$となる  
+これはすぷれーＡ　での個体数の平均と一致していることがわかる。  
+スプレーＢの平均は
+$e^{`r result$coef[["(Intercept)"]]`+`r result$coef[["sprayB"]]`}=`r round(exp(result$coef[["(Intercept)"]]+result$coef[["sprayB"]]),2)`$
+と表される
+
+##オフセットによる微調整法
+
+警察庁交通局交通企画課「交通統計」による平成１９エンドの交通事故発生意見数と平成１９年１０月現在の書く都道府県の推計人口の中から九州・沖縄の８件を取り出したものが以下である
+```{r}
+temp<-read.csv("chapter07_koutsuu.csv")
+#glm(accident~pref,data=temp,family="poisson")
+glm(accident~factor,data=temp,family="poisson")
+```
+$log{\lambda} = a +b_{1} factorB+ b_{2} factorC+ ... + b_{7} factorH$  
+解析結果を見るとfactorBからfactorHの係数は全て付の値であり、福岡県が一番事故件数が多い。  
+しかし、交通事故件数はその県の人口によって大きく変化することがかんがられ、各県お人口を考慮した分析が必要と生る。
+offsetを用いる。
+offsetはパラメータでなく、県ごとに異なる数値として与える。
+ポアソン回帰分析では、事故件数の平均$\lambda$の**対数**に対してモデルを考えているので,offsetも各県の人口の対数をよういる。
+
+```{r}
+temp<-read.csv("chapter07_koutsuu.csv")
+#glm(accident~pref,data=temp,family="poisson",offset=log(temp$popular))
+glm(accident~factor,data=temp,family="poisson",offset=log(temp$popular))
+```
+人口を考慮することによって、福岡よりも佐賀のほうが交通氏子件数うが多く、長崎屋沖縄では交通事故件数が少ない傾向が示せる。  
+ところで、AICの値は、offsetを入れてもモデルが変化しないため、変化しないのである。
+
+##過分散である場合の解析方法
+
+ポアソン回帰分析においては、過分さんが問題になる場合がある。ポアソン分布の特徴の一つとして平均が分散と等しいという性質がある。  
+ポアソン分布の宛ま針が良くない場合がある。  
+その理由として考えられる理由の一つは、個体差の問題である。
+$log{\lambda} = a + bx$  
+というモデルを仮定している、ここでは$\lambda$は$x$のみによって決まるモデルを仮定しているが、そこに個体ごとのばらつきを導入しよう。
+混乱を避けるために$x$が含まれない場合を考えようnこの回数データがあり、各回数に足ししては$\lambda$は一定ではなく**ガンマ分布**に従って変動するものと考える  
+$$
+f(\lambda)=\frac{\lambda^{a-1} e^{-\lambda_{}/b}}{\Gamma(a)b^a}
+$$
+で与えられ$\lambda$の平均は$ab$となり、分散は$ab^2$となるはshapeパラメータ、bはscaleパラメータと呼ばれている。  
+更に回数$y$の分布が、この$\lambda$の値をパラメータとするポアソン分布に従うものとすると、  
+$\lambda$の変動も含めた回数$y$の平均は$ab$,分散は$ab(1+b)$となる
+このことから$\lambda = ab$と固定した場合の分散に比べ$y$の分散は(1+b)バイになっていることがわかる。  
+また、この場合には分散は平均と等しくなく、bの値を用意て平均と分散の違いをこんとろーるすることができ、日分散をモデルの中に組み込むことができる。
+この分布は**府の二項分布**と呼ばれている
+```{r}
+set.seed(1)
+n<-1000
+lambda<-rgamma(n, shape=5, scale= 3)
+y <- rpois(n,lambda)
+mean(y) #理想値(ab)　= 15
+var(y)#理想値ab(b+1)　= 60
+```
+a=3,b=5のガンマ分布に従う$\lambda$を１０００こ発生させている。  
+###つぎに、容量反応関係を表すデータを作成してみよう
+容量を0mg〜20mgで5mgごとのカテゴライズ、この容量をxと考えると  
+$logE(\lambda) = 3 + 0.05x$  
+```{r}
+set.seed(2)
+n = 20
+v = 3
+dose<-c(0:4)*5
+x <- rep(dose, n)
+a<- exp(3+0.05*dose)/v
+lambda <- rgamma( 5 * n, shape =a, scale=v)
+y <- rpois(5*n, lambda)
+dataNB <- data.frame(x,y)
+boxplot(y~x,data= dataNB)
+```
+xで層別すると次のようになる
+```{r}
+by(y,x,mean)
+by(y,x,var)
+```
+byは２番めの変量でカテゴリーに分けて１番目の変量に対してapplyする関数。  
+結果を見ると平均に比べて分散はかなりを大きくなっていることがわかる。  
+平均に比べて大きなデータに対しては MASSの関数glm.nbを使うことで、ポアソン回帰分析と同じような分析を行うことができる。  
+```{r}
+library(MASS)
+glm.nb(y~x,data= dataNB)
+```
+この結果を見るとモデルの切片やｘの係数をかなりよく推定していることがわかる、比較のために、ポアソン回帰分析を行った場合の結果も記しておこう。
+```{r}
+glm(y~x,family="poisson",data= dataNB)
+```
+パラメータの推定はかなり近い値となっている。  
+しかし、負の二項分布モデルのほうがモデルの当てはまり(Residual Deviance)が良い。  
+モデル選択基準(AIC)も良いことがわかる。  
+
+##練習問題
+
+下の表は消防庁が調査した平成２１年１月から３月に発生した九州各県の建物火災の件数である
+```{r,results='asis'}
+temp<-read.csv("chapter07_example_question.csv")
+knitr::kable(temp)
+```
+
+
+このデータを夜使って、次の解析を行いなさい  
+
+(a)ポアソン回分析をよういて、建物火災件数の各県の違いを分析しなさい  
+(b)平成２１年の各県人口を調べ、人口をオフセットとしてお補正しなさい。  
+(c)人口の補正後に各県での違いがあると言えるかどうか調べなさい。  
+
+
+```{r}
+glm(fire.accident~factor,family="poisson",data=temp)
+(t<-glm(fire.accident~factor,offset=log(temp$popular),family="poisson",data=temp))
+summary(t)
+```
+  
+福岡の切片が正から負に変更。宮崎が結構動いた。
+p.valueより、説明変数として有意なのは、鹿児島であること、切片(福岡)であること。
+

@@ -1,0 +1,85 @@
+#define カレントポインタ current_point
+#define カッコ_  parenthesis
+#define 演算子 operator
+
+/*カレントポインタを演算子,null,')'に移動させる*/
+void move_next_演算子(char **カレントポインタ){
+	char *p;
+	int カッコ_flag=0;
+	p=*カレントポインタ;
+	for(;;p++){
+		if(*p==')'){ カッコ_flag--; continue; }/*カッコを飛ばす処理(ネスト回数を数える)*/
+		if(カッコ_flag>0){ continue; }
+		if(*p=='('){ カッコ増やすネスト(&p); カッコ_flag++; continue; }/*カッコを飛ばす処理(ネスト回数を数える)*/
+		if('0'<=*p&&*p<='9'){ continue; }/*数字を飛ばす処理*/
+		break;
+	}
+	*カレントポインタ=p;
+	return;
+}
+
+void カッコ増やすネスト(char **カレントポインタ){
+	char *p,*q,str[MAX],*p2;
+	int カッコ_flag=0;
+	p=q=*カレントポインタ;
+	p2=str;
+	for(;;q=p,p++){
+		move_next_演算子(&p);
+		if( !カッコ_add_flag )/*フラグは立っていないなら*/
+			if('*'==*p||*p=='/')/*演算子をみて後続の奴にカッコを入れさせる*/
+				{ カッコ_add_flag=1; *p2='('; p2++; }
+		else 
+			if('-'==*p||*p=='+')/*演算子をみて後続の奴にカッコを入れさせる*/
+				{ カッコ_add_flag=0; for(;(p-1)>=q;q++,p2++){ *p2=*q; } *p2=')'; p2++; }
+		for(;p>=q;q++,p2++){ *p2=*q; }
+		if( *p=='/0' ){ break; }
+		if( *p==')' ){ break; }/*カッコを飛ばす処理(ネスト回数を数える)*/
+	}	
+	strcat_plas(*カレントポインタ,q,str);//*カウントポインタからqまでの文字列をけし、その場所にstrを挿入する。
+	return;
+}
+void strcat_plas(int *p,int **q,int*str){//pからqまでの文字列をけし、その場所にstrを挿入する。
+	char temp[MAX];
+	*p='\0';
+	strcpy(temp,*q);
+	strcat(p,str);
+	*q=p+strlen(str);
+	strcat(*q,temp);
+}
+int get_value(char **カレントポインタ){
+	int value;
+	char *p,*q,str[MAX];
+	p=*カレントポインタ;/*ポインタの設定*/
+	q=str;
+
+	*q=getc(p);/*一文字目を取得*/
+	if(*q=='('){/*カッコが始まっていたらネストする*/
+		value=文字列式の演算(&p);
+	}
+	else{/*数字を取り出す処理*/
+		for(q++;'0'<=*q && *q<='9';q++){ *q=getc(p); }
+		*q='\0'
+		value=atoi(str);
+	}
+	*カレントポインタ=p;
+	return(value);
+}
+int 文字列式の演算(char **カレントポインタ){
+	int temp,flag=0,value;
+	char *p,演算子='n';
+	p=*カレントポインタ;
+	do{
+	temp=get_value(&p);
+	swich(演算子){
+			case'+': value+=temp; break;
+			case'-': value-=temp; break;
+			case'*': value*=temp; break;
+			case'/': value/=temp; break;
+			case'n': value=temp; break;/*clean_value*/
+	} 
+	演算子=getc(p); p++;//演算子=get_演算子();
+	}while( *p=='/0' || *p==')' );
+	*カレントポインタ=p;
+	return(value);
+	
+}

@@ -1,0 +1,16 @@
+
+import struct
+import binascii
+
+value = int('0101',2)
+s = struct.Struct('B)
+packed_data = s.pack(value)
+
+print 'Original values:', values
+print 'Format string  :', s.format
+print 'Uses           :', s.size, 'bytes'
+print 'Packed Value   :', binascii.hexlify(packed_data)
+
+よくわかんないけど、こういうこと？
+引用（参考）:http://ja.pymotw.com/2/struct/
+

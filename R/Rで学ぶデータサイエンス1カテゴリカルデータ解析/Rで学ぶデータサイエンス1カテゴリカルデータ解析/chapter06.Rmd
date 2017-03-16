@@ -1,0 +1,194 @@
+---
+title: "chapter06"
+author: "nukisashineko"
+date: "2015年06月23日"
+output: html_document
+---
+#ロジスティック回帰分析
+##ロジット変換
+```{r}
+temp<-read.csv("chapter06_rojitto.csv")
+plot(temp$capacity_mg, temp$effective_Yes)
+```
+
+
+このように、容量と効果の関係を見ると直線的な関係ではなく、S字型の変化をすること場合が多い  
+そのため、効果ありの割合ｐが直線的に増えるモデルではなく、ｐに対してある変換を行った量が直線的に増加するモデルが用いられる  
+**一般線形モデル**とよび、**ロジット変換**と**プロビット変換**が有名  
+$log\frac{p}{1-p}$と変換するもの  
+
+$log\frac{p}{1-p} =  a + bx$   
+という関係があることを仮定している。
+
+```{r}
+#教科書
+dose <- c(1:5); effect <- c(2,3,9,15,18);
+glm(cbind(effect,20-effect) ~ dose, family = binomial)
+
+#csv
+temp<-read.csv("chapter06_rojitto.csv")
+glm(cbind(effective_Yes,effective_No) ~capacity_mg ,data=temp, family = binomial)
+plot(temp$capacity_mg, temp$effective_Yes)
+```
+
+SpaceShuttle はスペースシャトル・チャレンジャーの打ち上げの際に生じるO-リングの故障状況を調べたものである。  
+スペースシャトルは複数のオーリングがあるがOリングが一つでも故障したかを表しているFailを目的変数と見ることにする。  
+
+Temperature(華氏温度) だけを説明変数と考え、TemperatureとFailの関係を調べる　　
+
+```{r}
+library(vcd)
+head(SpaceShuttle)
+glm(formula = Fail~ Temperature, data=SpaceShuttle, family= binomial)
+#温度が高いほど壊れやすく、温度が低いほど壊れにくくなる傾向があることを示している
+```
+
+Residual Devianceは-2（対数尤度関数）を表す  
+
+```{r}
+library(MASS)
+head(housing)
+(result <- glm(Sat~Cont, data=housing, weight=Freq, family=binomial))
+```
+###ロジスティック回帰分析を行う場合の３つのパターン
+1. 個票データが与えられている場合  
+    - glm(formula = 関係式, data=データフレーム名, family=binomial)  
+1. 集計データが与えられている場合  
+    - glm(formula = 関係式, data=データフレーム名, weight= 密度,  family=binomial)  
+1. カテゴリーごとにYesとNoの人数がわかる場合  
+    - glm(formula = c(Yesの人数,Noの人数), data=データフレーム名, family=binomial)  
+
+
+###解析方法
+
+ロジスティック回帰分析では説明変数の値ごとに、目的変数の割合を求めることができなくても、パラメータの推定が可能である。  
+この確率を最大にするa及びbの値をa,bの推定量としてよういる。
+この方法を最尤法という。
+この時のa,bの推定量を**最尤推定量**とよぶ。
+この関数の対数を撮ったもののことを**対数尤度関数**とよび、そのの最大値を**最大対数尤度関数**と呼ぶ。
+
+###多重ロジスティック回帰分析
+前回のOーリングは以下の式も考えられる
+$log\frac{p}{1-p} =  a + b Temperature + c Pressure$  
+
+これ用に、複数雨の説明変数を用いる場合は**多重ロジスティック回帰分析**と呼ぶことができる。
+
+```{r}
+library(vcd)
+result <- glm(Fail~Temperature+Pressure, data=SpaceShuttle, family= binomial)
+result
+```
+
+※注意、  
+このような、多重ロジスティック回帰分析は、成分の影響は独立していることを仮定している。  
+また、単に**係数の数知だけを見て判断してはいけない**ー＞生産者危険を起こす可能性も。。  
+例えば、PressureはTemparatureに比べて係数の値が小さいが、**Temparatureの変動が小さくPressureの変動が大きければ**、その**係数が小さくても全体的な影響は大きくなることがあるから**である。  
+
+
+```{r}
+summary(result)#Pressureは有意ではない
+```
+指標として、AIC(Akaike's Information Criteria)があり、これが小さいと当てはまりが良いと言える.  
+AIC = -2(最大対数尤度)+2(モデルに含まれるパラメータ数)  
+
+###ステップワイズ法
+
+多重ロジスティック回帰分析においてモデルの選択を考える場合には、手動でやるのは大変。  
+そのような場合に用要られる方法の一つが**ステップワイズ法**である  
+説明変数を増やしていく**変数増加法**、説明変数を減らしていく**変数減少法**がある  
+
+以下に変数減少法でモデルを選択する例を書く。
+```{r}
+#AICが増加しないように変数を減少させていく
+step(glm(Fail~Temperature+Pressure, data=SpaceShuttle, family=binomial))
+```
+
+ここでのモデル選択基準としてAICがよういられている。べテスの情報量基準であるBIC(Bayeasian Information Criteria)を用意たモデルの選択を行うことができる。  
+BIC= -2(最大対数尤度) + 2log(有効データ数)*(パラメータ数) 
+で定義される。  
+
+SpaceShuttleのデータ数は24であるが欠損値があるために１つ除外されているので、有効データ数は２３であるそこで、関数stepのオプションとしてk=log(23)をつけることによって、BICを使ってモデルを選択することができる  
+
+```{r}
+step(glm(Fail~Temperature+Pressure,data=SpaceShuttle, family=binomial),k=log(23))
+```
+
+この結果を見るとAICを用地た場合とほとんど同じ結果となっている違っているのはAICの値の部分だけである。表示がAIC の値の部分だけである。法事がAICとなっているので紛らわしいが実際には、BICの値を計算しておりモデルの選択も素の値で行われている。ただし、最後の行のAICの値だけは本当の意味のAICの値である
+
+###多項ロジスティック回帰分析
+目的変数が２値ー＞３っつ以上のカテゴリーを持つ変数である場合。
+ロジスティック回帰分析を拡張した手法を紹介しよう。
+ただし、カテゴリー数が３っつ以上の場合にはカテゴリー感に順序関係がある場合と順序関係がない場合では取り扱いが異なるので、分けて考えていくことになる。
+- **カテゴリー感に順序がない**
+$log\frac{p}{1-p}$は降った角カテゴリーの確率の比として考えることができる。  
+
+```{r}
+library(nnet)
+multinom(formula=Species~Sepal.Length,data=iris)
+```
+- **カテゴリー感に順序がある**
+順序関係を考慮すると(housingの場合)  
+lowとmedium以上のグループに分ける場合と  
+$log{ \frac{P(Sat=Low)}{P(Sat=Medium)+P(Sat=High)}}=\alpha_{L}+\beta_{}ContHigh$  
+medium以下とhighのグループに分ける場合と  
+$log{ \frac{P(Sat=Low)+P(Sat=Medium)}{P(Sat=High)}}=\alpha_{M}+\beta_{}ContHigh$  
+が考えられる
+```{r}
+library(MASS)
+summary(housing)
+t<-polr(Sat~Cont,weight=Freq,data=housing)
+t
+summary(t)
+
+library(vcd)
+```
+この分析結果は  
+$\alpha_{L} = `r round(t$zeta[["Low|Medium"]],3)`$  
+$\alpha_{M} = `r round(t$zeta[["Medium|High"]],3)`$  
+$\beta = `r round(t$coef[["ContHigh"]],3)`$  
+と読める  
+ｋの場合$\beta$の推定値は正であり、ContがLowの時に比べてHighの場合の法が満足度が高くなっていることがわかる  
+ただし、「$\beta$の値はそれほど大きくなく、係数が０である」という帰無仮説は有意水準５％で棄却できない  
+
+この説では説明を簡単にするために、説明変数がひとつの場合を考えているが、複数の変数が説明変数として考えられる場合には、変数を付け加えればいい。  
+
+###条件付きロジスティック回帰分析
+
+datasetのinfertを用いて説明する。  
+このデータは、流産や人工妊娠中絶がその後の出産における死産んお発生に英義侠尾を与えるかどうかを調べるために行われた患者対称研究の結果である。  
+```{r}
+head(infert)
+```
+
+ロジスティック回帰分析において、条件付き空いてを行うためには、survivalの関数clogitを用いる  
+
+```{r}
+library(survival)
+#case~spontaneous(流産)+induced（人工妊娠中絶）+strata(stratum)
+clogit(case~spontaneous+induced+strata(stratum),data=infert)
+```
+
+  条件付きロジスティック回帰では定数項は表示されない。定数項は層ごとに異なっており、患者対称研究の場合には定数項はあまり意味がないからである。  
+spontaneous(流産)+induced（人工妊娠中絶）はどちらも正の値を示しておりp値はとても小さいため有意である。  
+それぞれの係数は１変化した時の対数オッズ比と人石井のでexp(coef)も表示されている    
+この結果からspontaneous(流産)はオッズ比が７を超えており、induced（人工妊娠中絶）はオッズ比が約４である。  
+一般に発生頻度の低い病気の場合、オッズ比と発生割合費はほぼ等しいと考えられるので、流産を経験している人では死産となるリスクが７倍高くなっていると解釈される  
+  
+
+###練習問題
+Q1. datasetsのTitanicデータを修正データに変更し、Surviedを目的変数としてClass,Sex,Ageを説明変数として、路地っスティック回帰分析を行いその結果の解釈を述べなさい。
+```{r}
+df<-data.frame(Titanic)
+(t<-glm(Survived~Class+Sex+Age,weights=Freq,data=df,family=binomial))
+summary(t)
+```
+1stクラスであるか、女性であると生存率が高く、逆に成人、乗組員、クラスの低い人は生存率が低くなっている。
+
+Q2. パッケージvcdのJointSportsデータにおいて、異性とスポーツを一緒に行うことに対する意見opinionに対して３っつの変数year,grade,genderを説明変数として多項ロジスティック回帰分析を行い、その結果の解釈を述べなさい。
+```{r}
+library(vcd)
+summary(JointSports)
+(t<-glm(opinion~year+grade+gender,weights=Freq,data=JointSports,family=binomial))
+summary(t)
+```
+1983年であることが意見をイエスになる理由として大きく、女の子は意見をノウとすることが多いようだ

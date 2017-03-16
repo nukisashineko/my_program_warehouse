@@ -1,0 +1,53 @@
+---
+title: "理工学実験の飛行機データを作成"
+author: "nukisashineko"
+date: "2015年04月24日"
+output: html_document
+---
+
+とりあえず、飛行機のデータを入力
+
+```{r}
+price <- c(40,62,0.2,1.2,3.2,2.9,37,19,80,68)
+weight <- c(75,195,0.6,1.0,2.8,3.1,45,14,162,121)
+airplane <- data.frame(weight=weight,price=price)
+airplane
+```
+
+んで、相関見て
+```{r}
+cor(airplane$weight,airplane$price)
+cor(log10(airplane$weight),log10(airplane$price))
+```
+
+
+通常のままplot
+
+```{r, echo=FALSE}
+par(mfrow = c(1,2))
+plot(airplane)
+plot(log10(airplane$weight),log10(airplane$price))
+par(mfrow = c(1,1))
+```
+
+これで直線回帰して、
+
+```{r}
+m<-lm(log10(weight)~log10(price),data=airplane)
+summary(m)
+```
+
+これを両辺からlogをとって、やれば関数の出来上がり。
+
+とりあえず、図をggplot2で書きなおし。
+
+```{r}
+library(ggplot2)
+library(scales)
+ggplot(airplane,aes(x=weight,y=price))+
+  geom_point()+
+  geom_smooth(method="lm")+
+  theme_bw()
+```
+
+たかったんだけど、回帰直線をどう指定していいのかわからなかった・・・。つらたん。

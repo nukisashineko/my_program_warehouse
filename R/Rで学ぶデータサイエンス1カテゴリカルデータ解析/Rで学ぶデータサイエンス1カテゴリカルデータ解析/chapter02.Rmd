@@ -1,0 +1,247 @@
+---
+title: "chapter02"
+author: "nukisashineko"
+date: "2015年06月13日"
+output: html_document
+---
+
+#カテゴリカルデータの集計とグラフ表示
+```{r setup02,include=FALSE}
+library(ggplot2)
+library(reshape2)
+library(knitr)
+
+knitr::opts_chunk$set(cache=TRUE)
+setwd("/home/nukisashineko/program/R/Rで学ぶデータサイエンス1カテゴリカルデータ解析/Rで学ぶデータサイエンス1カテゴリカルデータ解析")
+```
+##個票データの集計
+```{r setup02_2}
+library(vcd)
+data(Arthritis)
+```
+
+```{r}
+#データフレーム
+head(Arthritis)
+#概要
+#補足：新薬=Treated,偽薬=Placebo
+#補足：改善度=Improved,none,some,顕著な改善=marked
+summary(Arthritis)
+```
+
+###１変数の集計
+```{r}
+summary(Arthritis$Age)
+(IMP <- xtabs(~Improved, data =Arthritis))
+#棒グラフ
+barplot(IMP)
+#棒グラフ（ソート済み）
+IMP <- IMP[order(IMP, decreasing =TRUE)]
+barplot(IMP)
+#円グラフの表示例
+pie(IMP)
+pie(IMP, radius = 1, col= gray(seq(0.6,1.0,length=3)),clockwise =TRUE)
+  #pie(IMP,clockwise =TRUE)
+```
+
+###２変数間の関係
+
+
+```{r}
+#xtab == グループ化＋集計
+(Ctable <- xtabs(~Treatment+Improved, data = Arthritis))
+#和を１として集計
+(Ctable.p <- prop.table(Ctable, margin =1))
+round(Ctable.p, 3)
+
+#帯グラフとして出力
+barplot(aperm(Ctable.p), horiz =T , axes =F,
+        col = gray(seq(0.6,1.0,length =3)),
+        xlab="Improved(None Some Marked)")
+axis(1, seq(0,1, by = 0.2), paste(seq(0,100,by =20),"%"))
+
+
+#補足：apermは縦と横を入れ替える関数
+aperm(Ctable.p)
+
+#モザイクプロット
+mosaicplot(Ctable, col=TRUE)
+mosaicplot(~Treatment+Improved, data=Arthritis , col=TRUE)
+```
+
+###３変数以上の間の関係 
+
+```{r}
+xtabs(~ Treatment + Improved +Sex,data=Arthritis)
+#三元表
+(Ctable2 <- xtabs(~ I(Treatment:Improved) +Sex,data=Arthritis) )
+Ctable2.p <- prop.table(Ctable2,margin=1)
+round(Ctable.p,3)
+
+#もざいくぷろっと
+Ctable3 <- xtabs(~Treatment+ Sex+ Improved, data =Arthritis)
+#プロット時、順番大切
+mosaicplot(Ctable3, col=TRUE)
+```
+
+###集計データの取り扱い
+
+```{r}
+library(vcd)
+data(DanishWelfare)
+head(DanishWelfare)
+summary(DanishWelfare)
+#アルコール消費量分布
+xtabs(Freq ~ Alcohol, data =DanishWelfare)
+#婚姻状況とアルコールの関係
+(Ctable4 <- xtabs(Freq ~ Status +Alcohol, data =DanishWelfare))
+mosaicplot(Ctable4,col=TRUE)
+
+#以下のように行うとおかしな結果になるFreqを度数として見れていないためである。
+mosaicplot(Freq ~ Status +Alcohol, data =DanishWelfare,col=TRUE)
+```
+
+##データフレームとテーブル
+
+###表形式データから集計データへの変更
+```{r}
+dtable <- matrix(c(2,18,3,17,9,11,15,5,18,2) , nr=2)
+dimnames(dtable) <- list( effect = list("あり","なし"),
+                          dose = list("1","2","3","4","5"))
+class(dtable) <- "table"
+dtable
+(dose_effect <- data.frame(dtable) )
+```
+
+###集計データから個票データへの変更
+```{r}
+DW <- data.frame(lapply(DanishWelfare, function(i) rep(i, DanishWelfare[,"Freq"])))
+head(DW)
+DW2 <- DW[-1]
+head(DW2)
+```
+
+###カテゴリーの変更
+```{r}
+library(vcd)
+xtabs(Freq ~ Income, data =DanishWelfare)
+levels(DanishWelfare$Income)
+levels(DanishWelfare$Income) <- c("0-100","0-100","100<","100<")
+levels(DanishWelfare$Income)
+data(DanishWelfare)
+```
+
+###量的変数からカテゴリカル変数への変更
+
+```{r}
+summary(Arthritis$Age)
+Arthritis$CatAge <- cut(Arthritis$Age, breaks = seq(20,80,by=10),labels=seq(20,70,by=10),right =FALSE)
+#補足：cutはrightの基準値を左右どちらが含むのかを決めることができる
+Arthritis$CatAge
+head(Arthritis)
+```
+
+###表の併合と部分中執
+```{r}
+(UCdata <- apply(UCBAdmissions, c(1,2), sum))
+UCBAdmissions[,"Male",]
+# 最初の要素を取り除く
+UCBAdmissions[,"Male",-1]
+```
+
+###その他グラフ表示
+```{r}
+library(vcd)
+data(Arthritis)
+```
+
+```{r}
+#ヒストグラム
+hist(Arthritis$Age)
+hist(Arthritis$Age,right=FALSE)
+hist(Arthritis$Age, breaks=seq(20,80,by=20),col="blue")
+hist(Arthritis$Age, breaks=seq(20,80,by=10),plot=FALSE)$count
+```
+
+```{r}
+#箱ひげ図
+boxplot(Arthritis$Age)
+boxplot(Age ~ Treatment, data= Arthritis)
+#補足：以下はエラー、ファクターは目的変数にできない
+#boxplot(Treatment ~ Age, data= Arthritis)
+```
+
+###グラフのオプション
+```{r}
+hist(Arthritis$Age,
+     breaks=seq(20,80,by=10),
+     xlab="年齢",
+     ylab="度数",
+     main="年齢の分布",
+     xlim=c(10,90),
+     ylim=c(0,40)
+     )
+```
+
+
+演習問題
+A.1   
+```{r}
+library(vcd)
+data(Arthritis)
+#a)性別で集計し、結果は棒、円グラフ  
+Arthritis.sex <- xtabs(~Sex,data=Arthritis)
+par(mfrow=c(1,2))
+barplot(Arthritis.sex)
+pie(Arthritis.sex,clockwise=TRUE)
+par(mfrow=c(1,1))
+
+#b) 性別と改善状況で集計,モザイクグラフ
+df <- xtabs(~Sex+Improved,data=Arthritis)
+mosaicplot(df,col=TRUE)
+```
+A.2
+```{r}
+TAccident <- read.csv("TAccident.csv",header=TRUE)
+#場所ごとの事件件数ー＞棒
+df <- xtabs(Freq~Place,data=TAccident)
+barplot(df);
+
+#シートベルト、怪我ー＞モザイク
+df <- xtabs(Freq~Seatbelt+Injury,data=TAccident)
+mosaicplot(df,col=TRUE)
+#性別、場所、怪我ー＞モザイク
+df <- xtabs(Freq~Sex+Place+Injury,data=TAccident)
+mosaicplot(df,col=TRUE)
+```
+
+A.3
+```{r}
+library(vcd)
+data(JobSatisfaction)
+head(JobSatisfaction)
+xtabs(Freq ~management+ own,data=JobSatisfaction)
+```
+
+A.
+A.4
+```{r}
+#Titanic[class,sex,age,survied]
+#age,surviedだけで集計ー＞二元表
+apply(Titanic, c(3,4), sum)
+#子供に限定、sex,surviedで集計ー＞二元表
+apply(Titanic[,,"Child",], c(2,3), sum)
+#classとsurviedで集計ー＞二元表->class==Crewを除外
+apply(Titanic, c(1,4), sum)[-4,]
+```
+A.5
+```{r}
+#taitanic（データフレーム）を集計データへ
+head(data.frame(Titanic))
+```
+
+
+
+
+
+

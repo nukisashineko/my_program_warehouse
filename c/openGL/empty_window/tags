@@ -1,0 +1,53 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+CC	Makefile	/^CC = gcc$/;"	m
+MAXPOINTS	program.c	5;"	d	file:
+add_count	program3.c	/^double add_count=0.0;$/;"	v
+blue	program2.c	/^GLfloat blue[]={0.2,0.2,0.8,1.0};$/;"	v
+cube	program2.c	/^void cube(void)$/;"	f
+display	program.c	/^void display(void)$/;"	f
+display	program2.c	/^void display(void)$/;"	f
+display	program3.c	/^void display(void)$/;"	f
+ex	program3.c	/^	static double ex=0.0,ey=0.0,ez=0.0;\/*視点の位置*\/$/;"	v	file:
+ey	program3.c	/^	static double ex=0.0,ey=0.0,ez=0.0;\/*視点の位置*\/$/;"	v	file:
+ez	program3.c	/^	static double ex=0.0,ey=0.0,ez=0.0;\/*視点の位置*\/$/;"	v	file:
+face	program2.c	/^int face[][4]={$/;"	v
+flag	program3.c	/^int flag=0,r_flag=0;$/;"	v
+fun	program3.c	5;"	d	file:
+green	program2.c	/^GLfloat green[]={0.0,1.0,0.0,1.0};$/;"	v
+idle	program2.c	/^void idle(void)$/;"	f
+init	program.c	/^void init(void)$/;"	f
+init	program2.c	/^void init(void)$/;"	f
+init	program3.c	/^void init(void)$/;"	f
+keyboard	program.c	/^void keyboard(unsigned char key,int x,int y)$/;"	f
+keyboard	program2.c	/^void keyboard(unsigned char key,int x,int y)$/;"	f
+keyboard	program3.c	/^void keyboard(unsigned char key,int x,int y)$/;"	f
+keyboard2	program3.c	/^void keyboard2(unsigned char key,int x,int y)$/;"	f
+keyboard3	program3.c	/^void keyboard3(unsigned char key,int x,int y)$/;"	f
+light0pos	program2.c	/^GLfloat light0pos[]={0.0,3.0,5.0,1.0};$/;"	v
+light1pos	program2.c	/^GLfloat light1pos[]={5.0,3.0,0.0,1.0};$/;"	v
+main	program.c	/^int main(int argc,char *argv[])$/;"	f
+main	program2.c	/^int main(int argc,char *argv[])$/;"	f
+main	program3.c	/^int main(int argc,char* argv[])$/;"	f
+motion	program.c	/^void motion(int x,int y)$/;"	f
+mouse	program.c	/^void mouse(int button,int state,int x,int y)$/;"	f
+mouse	program2.c	/^void mouse(int button,int state,int x,int y)$/;"	f
+normal	program2.c	/^GLdouble normal[][3]={$/;"	v
+point	program.c	/^GLint point[MAXPOINTS][2];\/*座標を記憶する配列*\/$/;"	v
+pointnum	program.c	/^int pointnum=0;\/*記憶した座標の数　*\/$/;"	v
+r	program3.c	/^	static double r=1.0,rx=0.0,ry=1.0,rz=0.0;\/*視点の向き*\/$/;"	v	file:
+r_flag	program3.c	/^int flag=0,r_flag=0;$/;"	v
+red	program2.c	/^GLfloat red[]={0.8,0.2,0.2,1.0};$/;"	v
+resize	program.c	/^void resize(int w,int h)$/;"	f
+resize	program2.c	/^void resize(int w,int h)$/;"	f
+resize	program3.c	/^void resize(int w,int h)$/;"	f
+rubberband	program.c	/^int rubberband=0;\/*ラバーバンドの消去*\/$/;"	v
+rx	program3.c	/^	static double r=1.0,rx=0.0,ry=1.0,rz=0.0;\/*視点の向き*\/$/;"	v	file:
+ry	program3.c	/^	static double r=1.0,rx=0.0,ry=1.0,rz=0.0;\/*視点の向き*\/$/;"	v	file:
+rz	program3.c	/^	static double r=1.0,rx=0.0,ry=1.0,rz=0.0;\/*視点の向き*\/$/;"	v	file:
+scene	program3.c	/^void scene(void)$/;"	f
+vertex	program2.c	/^GLdouble vertex[][3]={$/;"	v

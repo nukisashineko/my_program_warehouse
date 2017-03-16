@@ -1,0 +1,6 @@
+#!/usr/bin/clisp
+
+(LET ((FOO NIL))
+	(DOTIMES (VAR 10 VAR) (PUSH VAR FOO))
+	(NREVERSE FOO)
+	(MAPCAR #'(LAMBDA (X) (PRINC X)) FOO))

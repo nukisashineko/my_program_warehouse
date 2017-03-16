@@ -1,0 +1,23 @@
+#!/usr/bin/ruby 
+# -*- coding : utf-8 -*-
+user = "<gmail user>"
+pass = "<gmail pass>"
+
+require './gmail_func'
+
+def usage
+puts "\
+  argment error ... \n\
+  Usage: #{File.basename $0}"
+exit
+end
+
+#main start
+usage unless ARGV.length ==0
+
+
+Gmail.new(user,pass) do |gmail|
+   email=read_lately_mail(gmail)
+   read_mail(email)
+end
+#main end
