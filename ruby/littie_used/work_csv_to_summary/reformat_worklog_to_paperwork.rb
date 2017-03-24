@@ -41,8 +41,9 @@ summarys.keys.sort{|a,b| Date.parse(a) <=> Date.parse(b)}.each do |date|
 	results[month] ||= []
 	fraction_minutes += worktime[:minutes]
 #	puts "fraction_minutes = #{fraction_minutes}"
-	results[month].push({date: Date.parse(date).strftime('%d'),start:row[:starttime], end:row[:endtime],taskname: taskname, workhour: worktime[:hour] + fraction_minutes/60 })
-	fraction_minutes %= 60
+	results[month].push({date: Date.parse(date).strftime('%d'),start:row[:starttime], end:row[:endtime],taskname: taskname, workhour: worktime[:hour] + fraction_minutes.div(30)*1.0/2 })
+	fraction_minutes %= 30
+puts " #{fraction_minutes}分"
 end
 puts "次の月への繰越の分は #{fraction_minutes}分です"
 
