@@ -7,34 +7,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
-      <library name="backports (vbundled(3.8.0), /home/nukisashineko/Dropbox/Documents/program/ruby/making_now/get_narou_fav/vendor/bundle/ruby/2.3.0/gems/backports-3.8.0) [path][gem]">
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/backports-3.8.0/lib" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/backports-3.8.0/set_version" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/backports-3.8.0/frozen_old_spec" />
-        </CLASSES>
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/backports-3.8.0/lib" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/backports-3.8.0/set_version" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/backports-3.8.0/frozen_old_spec" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="diff-lcs (vbundled(1.3), /home/nukisashineko/Dropbox/Documents/program/ruby/making_now/get_narou_fav/vendor/bundle/ruby/2.3.0/gems/diff-lcs-1.3) [path][gem]">
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/diff-lcs-1.3/bin" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/diff-lcs-1.3/lib" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/diff-lcs-1.3/autotest" />
-        </CLASSES>
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/diff-lcs-1.3/bin" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/diff-lcs-1.3/lib" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/diff-lcs-1.3/autotest" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
       <library name="domain_name (vbundled(0.5.20170404), /home/nukisashineko/Dropbox/Documents/program/ruby/making_now/get_narou_fav/vendor/bundle/ruby/2.3.0/gems/domain_name-0.5.20170404) [path][gem]">
         <CLASSES>
           <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/domain_name-0.5.20170404/lib" />
@@ -49,34 +21,12 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="haml (vbundled(4.0.7), /home/nukisashineko/Dropbox/Documents/program/ruby/making_now/get_narou_fav/vendor/bundle/ruby/2.3.0/gems/haml-4.0.7) [path][gem]">
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/haml-4.0.7/bin" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/haml-4.0.7/lib" />
-        </CLASSES>
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/haml-4.0.7/bin" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/haml-4.0.7/lib" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
       <library name="http-cookie (vbundled(1.0.3), /home/nukisashineko/Dropbox/Documents/program/ruby/making_now/get_narou_fav/vendor/bundle/ruby/2.3.0/gems/http-cookie-1.0.3) [path][gem]">
         <CLASSES>
           <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/http-cookie-1.0.3/lib" />
         </CLASSES>
         <SOURCES>
           <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/http-cookie-1.0.3/lib" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="mail (vbundled(2.6.6), /home/nukisashineko/Dropbox/Documents/program/ruby/making_now/get_narou_fav/vendor/bundle/ruby/2.3.0/gems/mail-2.6.6) [path][gem]">
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/mail-2.6.6/lib" />
-        </CLASSES>
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/mail-2.6.6/lib" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -121,34 +71,6 @@
         <SOURCES>
           <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/mini_portile2-2.2.0/lib" />
           <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/mini_portile2-2.2.0/concourse" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="multi_json (vbundled(1.12.1), /home/nukisashineko/Dropbox/Documents/program/ruby/making_now/get_narou_fav/vendor/bundle/ruby/2.3.0/gems/multi_json-1.12.1) [path][gem]">
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/multi_json-1.12.1/lib" />
-        </CLASSES>
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/multi_json-1.12.1/lib" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="narou (vbundled(2.0.1), /home/nukisashineko/Dropbox/Documents/program/ruby/making_now/get_narou_fav/vendor/bundle/ruby/2.3.0/gems/narou-2.0.1) [path][gem]">
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/narou-2.0.1/bin" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/narou-2.0.1/lib" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/narou-2.0.1/preset" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/narou-2.0.1/template" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/narou-2.0.1/webnovel" />
-        </CLASSES>
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/narou-2.0.1/bin" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/narou-2.0.1/lib" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/narou-2.0.1/preset" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/narou-2.0.1/template" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/narou-2.0.1/webnovel" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -201,126 +123,6 @@
         </CLASSES>
         <SOURCES>
           <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/ntlm-http-0.1.1/lib" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="pony (vbundled(1.11), /home/nukisashineko/Dropbox/Documents/program/ruby/making_now/get_narou_fav/vendor/bundle/ruby/2.3.0/gems/pony-1.11) [path][gem]">
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/pony-1.11/lib" />
-        </CLASSES>
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/pony-1.11/lib" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="rack (vbundled(1.6.8), /home/nukisashineko/Dropbox/Documents/program/ruby/making_now/get_narou_fav/vendor/bundle/ruby/2.3.0/gems/rack-1.6.8) [path][gem]">
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/rack-1.6.8/bin" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/rack-1.6.8/lib" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/rack-1.6.8/contrib" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/rack-1.6.8/example" />
-        </CLASSES>
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/rack-1.6.8/bin" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/rack-1.6.8/lib" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/rack-1.6.8/contrib" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/rack-1.6.8/example" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="rack-protection (vbundled(1.5.3), /home/nukisashineko/Dropbox/Documents/program/ruby/making_now/get_narou_fav/vendor/bundle/ruby/2.3.0/gems/rack-protection-1.5.3) [path][gem]">
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/rack-protection-1.5.3/lib" />
-        </CLASSES>
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/rack-protection-1.5.3/lib" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="rack-test (vbundled(0.6.3), /home/nukisashineko/Dropbox/Documents/program/ruby/making_now/get_narou_fav/vendor/bundle/ruby/2.3.0/gems/rack-test-0.6.3) [path][gem]">
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/rack-test-0.6.3/lib" />
-        </CLASSES>
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/rack-test-0.6.3/lib" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="rubyzip (vbundled(1.2.1), /home/nukisashineko/Dropbox/Documents/program/ruby/making_now/get_narou_fav/vendor/bundle/ruby/2.3.0/gems/rubyzip-1.2.1) [path][gem]">
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/rubyzip-1.2.1/lib" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/rubyzip-1.2.1/samples" />
-        </CLASSES>
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/rubyzip-1.2.1/lib" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/rubyzip-1.2.1/samples" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="sass (vbundled(3.4.24), /home/nukisashineko/Dropbox/Documents/program/ruby/making_now/get_narou_fav/vendor/bundle/ruby/2.3.0/gems/sass-3.4.24) [path][gem]">
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/sass-3.4.24/bin" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/sass-3.4.24/lib" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/sass-3.4.24/extra" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/sass-3.4.24/rails" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/sass-3.4.24/vendor" />
-        </CLASSES>
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/sass-3.4.24/bin" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/sass-3.4.24/lib" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/sass-3.4.24/extra" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/sass-3.4.24/rails" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/sass-3.4.24/vendor" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="sinatra (vbundled(1.4.8), /home/nukisashineko/Dropbox/Documents/program/ruby/making_now/get_narou_fav/vendor/bundle/ruby/2.3.0/gems/sinatra-1.4.8) [path][gem]">
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/sinatra-1.4.8/lib" />
-        </CLASSES>
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/sinatra-1.4.8/lib" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="sinatra-contrib (vbundled(1.4.7), /home/nukisashineko/Dropbox/Documents/program/ruby/making_now/get_narou_fav/vendor/bundle/ruby/2.3.0/gems/sinatra-contrib-1.4.7) [path][gem]">
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/sinatra-contrib-1.4.7/lib" />
-        </CLASSES>
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/sinatra-contrib-1.4.7/lib" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="termcolorlight (vbundled(1.1.1), /home/nukisashineko/Dropbox/Documents/program/ruby/making_now/get_narou_fav/vendor/bundle/ruby/2.3.0/gems/termcolorlight-1.1.1) [path][gem]">
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/termcolorlight-1.1.1/lib" />
-        </CLASSES>
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/termcolorlight-1.1.1/lib" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="tilt (vbundled(2.0.7), /home/nukisashineko/Dropbox/Documents/program/ruby/making_now/get_narou_fav/vendor/bundle/ruby/2.3.0/gems/tilt-2.0.7) [path][gem]">
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/tilt-2.0.7/bin" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/tilt-2.0.7/lib" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/tilt-2.0.7/man" />
-        </CLASSES>
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/tilt-2.0.7/bin" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/tilt-2.0.7/lib" />
-          <root url="file://$MODULE_DIR$/vendor/bundle/ruby/2.3.0/gems/tilt-2.0.7/man" />
         </SOURCES>
       </library>
     </orderEntry>

@@ -49,21 +49,27 @@ def narou_login()
 end
 
 
+def delete_all_favorite_tag(file,favorite_category_ncodes)
+  favorite_category_tags_string = favorite_category_ncodes.keys.join(" ")
+  file.puts("for i in do `seq 1 100`; do ")
+  file.puts("narou tag --delete '#{favorite_category_tags_string}' $i")
+  file.puts("done;")
+end
+
 
 
 narou_login do |agent|
-  pp favorite_category_ncodes = get_favorite_ncodes(agent)
-  favorite_category_tags_string = favorite_category_ncodes.keys.join(" ")
-
-  # get_all_id.each do |id|
-  #   narou_tag_delete id favorite_category_tags_string
-  # end
-
-  favorite_category_ncodes.each do |new_tag, ncode_list|
-    ncode_list.each do |ncode|
-      # id = download_and_update ncode
-      # narou_tag_add id new_tag
+  favorite_category_ncodes = get_favorite_ncodes(agent)
+  File.open("temp.bash","w") do |file|
+    file.puts("narou s update.interval=3.0")
+    file.puts("narou s download.interval=1.0")
+    file.puts("narou s download.wait-steps=5")
+    delete_all_favorite_tag(file,favorite_category_ncodes)
+    favorite_category_ncodes.each do |new_fav_category_tag, ncode_list|
+        file.puts("narou download  #{ncode_list.join(" ")}")
+        file.puts("narou tag --add '#{new_fav_category_tag}'  #{ncode_list.join(" ")}")
     end
+
   end
 end
 
